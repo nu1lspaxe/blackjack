@@ -1,4 +1,5 @@
 .hint {
-    color: gray;
     justify-items: end;
+    color: gray;
+    font-size: .875rem;
 }

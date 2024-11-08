@@ -2,6 +2,11 @@
     font-size: 16px;
     font-family: 'Misans TC VF', sans-serif;
     font-weight: 300;
+    color: #303030;
+    
+    --text-primary: #303030;
+    --text-secondary: #606060;
+    --text-tertiary: #808080;
 }
 
 body {
@@ -12,6 +17,8 @@ body {
 #root {
     box-sizing: border-box ;
     width: 100vw;
+    max-width: 100vh;
     height: 100vh;
     padding: 1rem;
+    margin: 0 auto;
 }

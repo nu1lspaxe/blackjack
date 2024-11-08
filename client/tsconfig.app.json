@@ -23,7 +23,12 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@screens/*": ["./src/screens/*"]
+      "@components": ["./src/components"],
+      "@components/*": ["./src/components/*"],
+      "@screens": ["./src/screens"],
+      "@screens/*": ["./src/screens/*"],
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": ["src"]

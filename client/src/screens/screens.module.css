@@ -3,6 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 1.5rem;
     width: 100%;
     height: 100%;
 }
@@ -13,6 +14,6 @@
 
 .brand {
     width: 200px;
-    margin: auto;
+    fill: var(--text-primary);
     view-transition-name: brand;
 }
