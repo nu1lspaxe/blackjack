@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import { constants } from '../config/constants';
 
 const app: Application = express();
 
@@ -8,6 +9,6 @@ app.get('/', (req, res) => {
 	res.send('Hello, world!');
 });
 
-app.listen(3333, () => console.log('Server ready on port 3333.'));
+app.listen(constants.PORT, () => console.log(`Server ready on port ${constants.PORT}.`));
 
 module.exports = app;
