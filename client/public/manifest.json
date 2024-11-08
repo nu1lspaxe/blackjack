@@ -1,0 +1,12 @@
+{
+    "name": "BlackJack",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "type": "image/svg+xml"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}
