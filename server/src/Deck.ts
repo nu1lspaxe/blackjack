@@ -1,4 +1,4 @@
-import { Card, CardValue, Suit } from "./Card";
+import { Card, Value, Suit } from "./Card";
 
 class Deck {
     private cards: Card[] = [];
@@ -13,15 +13,14 @@ class Deck {
     private createDeck(): void {
         for (let i = 0; i < this.deckSize; i++) {
             for (let suit of Object.keys(Suit)) {
-                for (let value of Object.keys(CardValue)) {
-                    this.cards.push(new Card(Suit[suit as keyof typeof Suit], CardValue[value as keyof typeof CardValue]));
+                for (let value of Object.keys(Value)) {
+                    this.cards.push(new Card(Suit[suit as keyof typeof Suit], Value[value as keyof typeof Value]));
                 }
             }
         }
         
     }
 
-    // from GPT
     public shuffle(): void {
         for (let i = this.cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));

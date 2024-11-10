@@ -1,4 +1,4 @@
-import { Card, CardValue, Suit } from '../Card';
+import { Card, Value, Suit } from '../Card';
 import Player from '../Player';
 
 describe('Player Class', () => {
@@ -26,15 +26,15 @@ describe('Player Class', () => {
     });
 
     test('should calculate points with cards correctly', () => {
-        player.takeCard(new Card(Suit.Spades, CardValue.A));
-        player.takeCard(new Card(Suit.Clubs, CardValue.Ten));
+        player.takeCard(new Card(Suit.Spades, Value.Ace));
+        player.takeCard(new Card(Suit.Clubs, Value.Ten));
         expect(player.getPoints()).toBe(21);
     });
 
     test('should indicate if player is busted', () => {
-        player.takeCard(new Card(Suit.Hearts, CardValue.K));
-        player.takeCard(new Card(Suit.Diamonds, CardValue.Q));
-        player.takeCard(new Card(Suit.Spades, CardValue.Three));
+        player.takeCard(new Card(Suit.Hearts, Value.King));
+        player.takeCard(new Card(Suit.Diamonds, Value.Queen));
+        player.takeCard(new Card(Suit.Spades, Value.Three));
         expect(player.isBusted()).toBe(true);
     });
 

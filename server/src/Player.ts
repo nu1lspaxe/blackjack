@@ -1,4 +1,4 @@
-import { Card, CardValue } from './Card';
+import { Card, Value } from './Card';
 
 class Player {
     static readonly MAX_APPERANCE_ID = 2;
@@ -52,7 +52,7 @@ class Player {
         let aces = 0;
 
         for (let card of this.cards) {
-            if (card.value === CardValue.A) {
+            if (card.value === Value.Ace) {
                 aces++;
             }
             points += card.points;
