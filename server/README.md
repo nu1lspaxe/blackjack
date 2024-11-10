@@ -30,11 +30,11 @@ class Dealer extends BasePlayer {
 ### 玩家動作
 ```javascript
 enum Action {
-    Stand = "Stand",            // 停牌
-    DoubleDown = "DoubleDown",  // 加倍賭注
-    Surrender = "Surrender",    // 投降
-    Split = "Split",            // 分牌
-    Hit = "Hit"                 // 要牌
+    Hit = 0,            // 要牌
+    Stand = 1,          // 停牌
+    DoubleDown = 2,     // 加倍賭注
+    Surrender = 3,      // 投降
+    Split = 4           // 分牌
 }
 ```
 
