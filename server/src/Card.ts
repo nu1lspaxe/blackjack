@@ -5,7 +5,7 @@ enum Suit {
     Spades = 'Spades'
 }
 
-enum CardValue {
+enum Value {
     Two = '2',
     Three = '3',
     Four = '4',
@@ -15,37 +15,37 @@ enum CardValue {
     Eight = '8',
     Nine = '9',
     Ten = '10',
-    J = 'J',
-    Q = 'Q',
-    K = 'K',
-    A = 'A'
+    Jack = 'J',
+    Queen = 'Q',
+    King = 'K',
+    Ace = 'A'
 }
 
 class Card {
     public suit: Suit;
-    public value: CardValue;
+    public value: Value;
     public points: number;
-    static readonly CardValuePoints: { [key in CardValue]: number } = {
-        [CardValue.Two]: 2,
-        [CardValue.Three]: 3,
-        [CardValue.Four]: 4,
-        [CardValue.Five]: 5,
-        [CardValue.Six]: 6,
-        [CardValue.Seven]: 7,
-        [CardValue.Eight]: 8,
-        [CardValue.Nine]: 9,
-        [CardValue.Ten]: 10,
-        [CardValue.J]: 10,
-        [CardValue.Q]: 10,
-        [CardValue.K]: 10,
-        [CardValue.A]: 1, // Ace is initially to 1, deal with in getPoints() in Player
+    static readonly Points: { [key in Value]: number } = {
+        [Value.Two]: 2,
+        [Value.Three]: 3,
+        [Value.Four]: 4,
+        [Value.Five]: 5,
+        [Value.Six]: 6,
+        [Value.Seven]: 7,
+        [Value.Eight]: 8,
+        [Value.Nine]: 9,
+        [Value.Ten]: 10,
+        [Value.Jack]: 10,
+        [Value.Queen]: 10,
+        [Value.King]: 10,
+        [Value.Ace]: 11,
     };
 
-    constructor(suit: Suit, value: CardValue) {
+    constructor(suit: Suit, value: Value) {
         this.suit = suit;
         this.value = value;
-        this.points = Card.CardValuePoints[value];
+        this.points = Card.Points[value];
     }
 }
 
-export { Card, Suit, CardValue };
+export { Card, Suit, Value as Value };
