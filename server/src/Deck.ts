@@ -14,7 +14,9 @@ class Deck {
         for (let i = 0; i < this.deckSize; i++) {
             for (let suit of Object.keys(Suit)) {
                 for (let value of Object.keys(Value)) {
-                    this.cards.push(new Card(Suit[suit as keyof typeof Suit], Value[value as keyof typeof Value]));
+                    this.cards.push(new Card(
+                        Suit[suit as keyof typeof Suit], 
+                        Value[value as keyof typeof Value]));
                 }
             }
         }
