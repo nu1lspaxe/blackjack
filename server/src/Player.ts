@@ -95,7 +95,7 @@ class Player {
     }
 
     public setPosition(position: number): void {
-        if (position < 0 || position >= 4) {
+        if (position < 0 || position > 4) {
             throw new Error('Invalid position');
         }
 
