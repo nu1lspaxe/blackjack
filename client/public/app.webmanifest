@@ -1,11 +1,15 @@
 {
     "name": "BlackJack",
+    "short_name": "BlackJack",
+    "start_url": ".",
     "icons": [
         {
-            "src": "/icon.png",
+            "src": "/app-icon.svg",
+            "size": "any",
             "type": "image/svg+xml"
         }
     ],
+    "orientation": "portrait",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "display": "standalone"
