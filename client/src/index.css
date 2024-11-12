@@ -17,8 +17,8 @@ body {
 #root {
     box-sizing: border-box ;
     width: 100vw;
-    max-width: 100vh;
-    height: 100vh;
+    max-width: 100svh;
+    height: 100svh;
     padding: 1rem;
     margin: 0 auto;
 }

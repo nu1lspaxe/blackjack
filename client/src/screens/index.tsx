@@ -2,6 +2,7 @@ import { createMemoryRouter, RouteObject } from 'react-router-dom';
 
 import MainScreen from './main-screen';
 import MainMenu from './main-menu';
+import RandomMatch from './random-match';
 
 const routes: RouteObject[] = [
     {
@@ -11,6 +12,18 @@ const routes: RouteObject[] = [
     {
         path: '/menu',
         element: <MainMenu />
+    },
+    {
+        path: '/match',
+        element: <RandomMatch  />
+    },
+    {
+        path: '/join',
+        element: <></>
+    },
+    {
+        path: '/waiting',
+        element: <></>
     }
 ];
 

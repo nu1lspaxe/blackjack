@@ -15,7 +15,7 @@ export default defineConfig({
             "@": resolve("./src"),
             "@components": resolve("./src/components"),
             "@screens": resolve("./src/screens"),
-            "@utils": resolve("./src/utils")
+            "@utils": resolve("./src/utils"),
         }
     },
 

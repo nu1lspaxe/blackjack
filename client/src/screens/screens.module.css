@@ -17,3 +17,11 @@
     fill: var(--text-primary);
     view-transition-name: brand;
 }
+
+.back {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+}
