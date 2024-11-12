@@ -1,120 +1,133 @@
-import { Card, Value } from './Card';
+import { ERROR } from '../utils/utils';
+import BasePlayer from './BasePlayer';
 
-class Player {
-    static readonly MAX_APPERANCE_ID = 2;
+enum PlayerAction {
+    Hit = 'hit',
+    Stand = 'stand',
+    DoubleDown = 'double down',
+    Surrender = 'surrender',   
+    Split = 'split'     
+}
 
-    public name: string;
-    public appearanceID: number;
-    public position: number;
+class Player extends BasePlayer {
+
+    public seat: number;
     public readyStatus: boolean = false;
     public standStatus: boolean = false;
+    public chips: number;         
+    private betAmount: number = 0; 
+    private insuranceBet: number = 0; 
 
-    private cards: Card[] = [];
-    private chips: number;
-    private currentBet: number;
-
-    constructor(name: string, appearanceID: number, position: number, chips: number) {
-        this.name = name;
-        this.appearanceID = appearanceID;
-        this.position = position;
+    /**
+     * Creates an instance of a player.
+     * @param {number} seat - The seat number of the player
+     * @param {number} chips - The number of chips the player starts with
+     * @param {string} [name="NoName"] - The name of the player (default is "NoName")
+     */
+    constructor(seat: number, chips: number, name: string = "NoName") {
+        super(name);
+        this.seat = seat;
         this.chips = chips;
-        this.currentBet = 0;
     }
 
+    /**
+     * Allows the player to place a bet.
+     * @param {number} amount - The amount to bet
+     * @return {boolean} - Returns true if the bet was placed successfully, false if there are insufficient chips
+     */
+    public placeBet(amount: number): boolean {
+        if (amount <= 0 || amount > this.chips) {
+            throw new Error(ERROR.INVALID_VALUE);
+        }
+        this.betAmount = amount;
+        this.chips -= amount;
+        return true;
+    }
+
+    /**
+     * Allows the player to place an insurance bet (half of the current bet).
+     * @return {boolean} - Returns true if the insurance bet was placed successfully, false if there are insufficient chips
+     */
+    public placeInsuranceBet(): boolean {
+        const insuranceAmount = Math.floor(this.betAmount / 2);
+        if (insuranceAmount > this.chips) {
+            console.error(ERROR.INVALID_VALUE);
+            return false;
+        }
+        this.insuranceBet = insuranceAmount;
+        this.chips -= insuranceAmount;
+        return true;
+    }
+
+    /**
+     * Handles the scenario where the player wins the bet.
+     * @param {number} [multiplier=1] - The multiplier for the winnings (default is 1x)
+     */
+    public winBet(multiplier: number = 1): void {
+        const winnings = this.betAmount * multiplier;
+        this.chips += winnings;
+        this.resetBet();
+    }
+
+    /**
+     * Handles the scenario where the player wins the insurance bet.
+     */
+    public winInsurance(): void {
+        const insuranceWinnings = this.insuranceBet * 2;
+        this.chips += insuranceWinnings;
+        this.insuranceBet = 0;
+    }
+
+    /**
+     * Handles the bust scenario where the player loses the bet and ends their turn.
+     */
+    public bust(): void {
+        this.standStatus = true;
+        this.betAmount = 0;
+        this.insuranceBet = 0;
+    }
+
+    /**
+     * Marks the player as having stood (ended their turn).
+     */
+    public stand(): void {
+        this.standStatus = true;
+    }
+
+    /**
+     * Resets the bet and insurance bet amounts.
+     * @private
+     */
+    private resetBet(): void {
+        this.betAmount = 0;
+        this.insuranceBet = 0;
+    }
+
+    /**
+     * Gets the current number of chips the player has.
+     * @return {number} - The current chip count of the player
+     */
     public getChips(): number {
         return this.chips;
     }
 
-    public placeBet(bet: number): void {
-        if (bet <= 0) {
-            throw new Error('Invalid bet amount');
-        }
-        if (bet > this.chips) {
-            throw new Error('Chips not enough');
-        }
-        this.chips -= bet;
-        this.currentBet = bet;
+    /**
+     * Toggles the ready status of the player.
+     */
+    public toggleReadyStatus(): void {
+        this.readyStatus = !this.readyStatus;
     }
 
-    public winBet(odds: number): void {
-        this.chips += this.currentBet * odds;
-    }
-
-    public loseBet(): void {
-        this.chips -= this.currentBet;
-    }
-
-    public getPoints(): number {
-        if (this.cards.length === 0) {
-            return 0;
-        }
-        let points = 0;
-        let aces = 0;
-
-        for (let card of this.cards) {
-            if (card.value === Value.Ace) {
-                aces++;
-            }
-            points += card.points;
-        }
-
-        // count for aces
-        while (points + 10 <= 21 && aces > 0) {
-            points += 10;
-            aces--;
-        }
-
-        return points;
-    }
-
-    public takeCard(card: Card): void {
-        this.cards.push(card);
-    }
-
-    public isBusted(): boolean {
-        return this.getPoints() > 21;
-    }
-
-    public changeAppearance(id: number): void {
-        if (id < 0 || id >= Player.MAX_APPERANCE_ID) {
-            throw new Error('Invalid appearance ID');
-        }
-        this.appearanceID = id;
-    }
-
-    public getReadyStatus(): boolean {
-        return this.readyStatus;
-    }
-
-    public setReadyStatus(status: boolean): void {
-        this.readyStatus = status;
-    }
-
-    public getPosition(): number {
-        return this.position;
-    }
-
-    public setPosition(position: number): void {
-        if (position < 0 || position > 4) {
-            throw new Error('Invalid position');
-        }
-
-        // TODO: check position empty
-        if (false) {
-            throw new Error('Position is already taken');
-        }
-
-        this.position = position;
-    }
-
-    public getStandStatus(): boolean {
-        return this.standStatus;
-    }
-
-    public setStandStatus(status: boolean): void {
-        this.standStatus = status;
+    /**
+     * Resets the player's hand, status, and bet.
+     * This is usually called when the player prepares for a new round.
+     */
+    public resetHandAndStatus(): void {
+        this.resetHand();
+        this.standStatus = false;
+        this.readyStatus = false;
+        this.resetBet();
     }
 }
-
 
 export default Player;
