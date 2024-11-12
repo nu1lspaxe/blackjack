@@ -46,6 +46,10 @@ class Card {
         this.value = value;
         this.points = Card.Points[value];
     }
+
+    public toString(): string {
+        return `${this.value} ${this.suit}`;
+    }
 }
 
 export { Card, Suit, Value as Value };

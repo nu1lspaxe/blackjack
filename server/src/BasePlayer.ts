@@ -4,14 +4,11 @@ import { Card, Value } from "./Card";
 class BasePlayer {
     private id: string;
     private hand: Card[] = [];  
-    private name: string;
+    public name: string;
 
-    public isBusted: boolean = false;
-
-    constructor(name: string, cards: Card[]) {
+    constructor(name: string = "NoName") {
         this.id = generateUUID();
         this.name = name;
-        this.hand = cards;
     }
 
     public getHand(): Card[] {
@@ -30,9 +27,8 @@ class BasePlayer {
         this.hand.push(card);
     }
 
-    public checkBust(): boolean {
-        this.isBusted = this.calculateHand() > 21;
-        return this.isBusted;
+    public isBust(): boolean {
+        return this.calculateHand() > 21;
     }
 
     public calculateHand(): number {

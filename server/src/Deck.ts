@@ -1,3 +1,4 @@
+import { ERROR } from "../utils/utils";
 import { Card, Value, Suit } from "./Card";
 
 class Deck {
@@ -30,15 +31,19 @@ class Deck {
         }
     }
 
-    public drawCard(): Card | undefined {
-        return this.cards.pop();
+    public drawCard(): Card {
+        let card = this.cards.pop();
+        if (!card) {
+            throw new Error(ERROR.UNDEFINED_CARD);
+        }
+        return card;
     }
 
     public getDeck(): Card[] {
         return this.cards;
     }
 
-    public getDeckSize(): number {
+    public getRemainLength(): number {
         return this.cards.length;
     }
 
