@@ -9,7 +9,7 @@ describe('Deck Class', () => {
     });
 
     test('should create a deck with 312 cards for the default 6 decks', () => {
-        expect(deck.getDeckSize()).toBe(312);
+        expect(deck.getRemainLength()).toBe(312);
     });
 
     test('should shuffle the deck', () => {
@@ -20,15 +20,15 @@ describe('Deck Class', () => {
     });
 
     test('should draw a card and decrease deck size', () => {
-        const initialSize = deck.getDeckSize();
+        const initialSize = deck.getRemainLength();
         const drawnCard = deck.drawCard();
         expect(drawnCard).toBeInstanceOf(Card);
-        expect(deck.getDeckSize()).toBe(initialSize - 1);
+        expect(deck.getRemainLength()).toBe(initialSize - 1);
     });
 
     test('should reset the deck to the original size (312 cards)', () => {
         deck.drawCard();
         deck.resetDeck();
-        expect(deck.getDeckSize()).toBe(312);
+        expect(deck.getRemainLength()).toBe(312);
     });
 });
