@@ -13,7 +13,7 @@ export function broadcast(message: string) {
 
 export const tables: Map<string, Table> = new Map(); 
 
-export function createTable(chips: number, name: string)  {
+export function createTable(chips: number, name: string): string {
     const tableCode = generateTableCode();  
     const newPlayer = new Player(1, chips, name);
 
@@ -21,6 +21,8 @@ export function createTable(chips: number, name: string)  {
     tables.set(tableCode, table);
 
     console.log(`Table created with ID: ${tableCode}`);
+
+    return tableCode;
 }
 
 export function joinTable(tableCode: string, chips: number, name: string) {

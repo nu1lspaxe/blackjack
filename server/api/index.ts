@@ -27,10 +27,13 @@ wss.on('connection', (ws: WebSocket) => {
 
         try {
             const jsonData = JSON.parse(message);
-            if (jsonData.type === 'createRoom') {
-                createTable(jsonData.chips, jsonData.name);
-            } else if (jsonData.type === 'joinRoom') {
-                joinTable(jsonData.roomId, jsonData.chips, jsonData.name);
+            if (jsonData.type === 'create_table') {
+                let tableCode = createTable(jsonData.chips, jsonData.name);
+                ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
+
+            } else if (jsonData.type === 'join_table') {
+                joinTable(jsonData.tableCode, jsonData.chips, jsonData.name);
+                ws.send(JSON.stringify({ type: 'table_joined', tableCode: jsonData.tableCode }));
             }
         } catch (error) {
             if (error instanceof Error) {
