@@ -11,26 +11,28 @@
       // Replace 'localhost' and 'constants.WS_PORT' with your server's URL and port
       const socket = new WebSocket("ws://localhost:3000");
 
+      function createTableMessage(chips, name) {
+        return JSON.stringify({
+          type: "create_table",
+          chips,
+          name,
+        });
+      }
+
+      function joinTableMessage(tableCode, chips, name) {
+        return JSON.stringify({
+          type: "join_table",
+          tableCode,
+          chips,
+          name,
+        });
+      }
+
       // When the WebSocket connection is open
       socket.addEventListener("open", () => {
         console.log("Connected to WebSocket server");
-
-        // Example: Send a message to create a room
-        const createRoomMessage = JSON.stringify({
-          type: "createRoom",
-          chips: 100,
-          name: "Room 1",
-        });
-        socket.send(createRoomMessage);
-
-        // Example: Send a message to join a room
-        const joinRoomMessage = JSON.stringify({
-          type: "joinRoom",
-          roomId: 1,
-          chips: 50,
-          name: "Player 1",
-        });
-        socket.send(joinRoomMessage);
+        let message = createTableMessage(1000, "Alice");
+        socket.send(message);
       });
 
       // When a message is received from the server
@@ -42,6 +44,14 @@
           console.error("Error:", data.message);
         }
         // Handle other types of responses here as needed
+        if (data.type === "table_created") {
+          console.log("Table created with code:", data.tableCode);
+          let message = joinTableMessage(data.tableCode, 1000, "Bob");
+          socket.send(message);
+        }
+        if (data.type === "table_joined") {
+          console.log("Joined table with code:", data.tableCode);
+        }
       });
 
       // When the WebSocket connection is closed
