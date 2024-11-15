@@ -17,7 +17,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         super();
     }
 
-    public async joinRoom(roomNumber: string): Promise<void> {
+    public async joinRoom(_roomNumber: string): Promise<void> {
         // TODO: connect to room
     }
 
