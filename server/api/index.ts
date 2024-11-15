@@ -9,6 +9,15 @@ const app: Application = express();
 // Express setup
 app.use(express.static('public'));
 
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // 允許所有來源
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+  });
+
+
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
