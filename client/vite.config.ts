@@ -6,6 +6,8 @@ import svgr from "vite-plugin-svgr";
 
 // https://vite.dev/config/
 export default defineConfig({
+    base: 'blackjack',
+
     server: {
         host: true
     },
