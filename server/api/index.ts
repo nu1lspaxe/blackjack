@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { constants } from '../config/constants';
 import { createTable, joinTable } from '../src/Lobby';
+import opentelemetry, { trace } from '@opentelemetry/api';
 
 const app: Application = express();
 
