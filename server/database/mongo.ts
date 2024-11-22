@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion, Db } from 'mongodb';
-import { constants } from '../config/constants';
+import { constants } from '@config/constants';
 
 class DBManager {
     private static instance: DBManager;

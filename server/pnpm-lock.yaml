@@ -52,7 +52,7 @@ importers:
         version: 3.1.7
       server:
         specifier: 'file:'
-        version: file:(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(@opentelemetry/api@1.9.0)(@types/node@22.9.0)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))
+        version: file:(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(@types/node@22.9.0)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))
       ts-jest:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(typescript@5.6.3)
@@ -4817,8 +4817,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  server@file:(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(@opentelemetry/api@1.9.0)(@types/node@22.9.0)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))):
+  server@file:(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(@types/node@22.9.0)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))):
     dependencies:
+      '@opentelemetry/api': 1.9.0
       '@opentelemetry/auto-instrumentations-node': 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-metrics-otlp-proto': 0.54.2(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-proto': 0.54.2(@opentelemetry/api@1.9.0)
@@ -4843,7 +4844,6 @@ snapshots:
       - '@jest/transform'
       - '@jest/types'
       - '@mongodb-js/zstd'
-      - '@opentelemetry/api'
       - '@swc/core'
       - '@swc/wasm'
       - '@types/node'

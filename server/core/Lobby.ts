@@ -1,15 +1,7 @@
 import Player from './Player';
 import Table from './Table';
-import { ERROR, generateTableCode } from '../utils/utils';
-import {wss} from '../api/index';
+import { ERROR, generateTableCode } from '@utils/utils';
 
-export function broadcast(message: string) {
-    wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(message);
-        }
-    });
-}
 
 export const tables: Map<string, Table> = new Map(); 
 

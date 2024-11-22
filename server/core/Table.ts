@@ -1,5 +1,5 @@
-import { broadcast } from "./Lobby";
-import { ERROR, generateUUID } from "../utils/utils";
+import { broadcast } from "@event/Notifier";
+import { ERROR, generateUUID } from "@utils/utils";
 import { Card, Value } from "./Card";
 import Dealer from "./Dealer";
 import Deck from "./Deck";

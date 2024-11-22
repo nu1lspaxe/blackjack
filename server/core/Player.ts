@@ -1,4 +1,4 @@
-import { ERROR } from '../utils/utils';
+import { ERROR } from '@utils/utils';
 import BasePlayer from './BasePlayer';
 
 enum PlayerAction {
@@ -18,6 +18,8 @@ class Player extends BasePlayer {
     private betAmount: number = 0; 
     private insuranceBet: number = 0; 
 
+    private _ws: WebSocket | null = null;
+
     /**
      * Creates an instance of a player.
      * @param {number} seat - The seat number of the player
@@ -28,6 +30,7 @@ class Player extends BasePlayer {
         super(name);
         this.seat = seat;
         this.chips = chips;
+        this._ws = new WebSocket('ws://localhost:8080');
     }
 
     /**

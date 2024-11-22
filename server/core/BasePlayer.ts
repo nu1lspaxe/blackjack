@@ -1,4 +1,4 @@
-import { generateUUID } from "../utils/utils";
+import { generateUUID } from "@utils/utils";
 import { Card, Value } from "./Card";
 
 class BasePlayer {

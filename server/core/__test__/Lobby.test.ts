@@ -2,9 +2,8 @@ import { after } from 'node:test';
 import { ERROR } from '../../utils/utils';
 import { createTable, joinTable, tables } from '../Lobby';
 
-jest.mock('../Lobby', () => {
+jest.mock('@event/Notifier', () => {
     return {
-        ...jest.requireActual('../Lobby'), 
         broadcast: jest.fn(), 
     };
 });
@@ -35,6 +34,7 @@ describe('joinTable', () => {
     beforeEach(() => {
         tables.clear();
     });
+
 
     it('should add a player to an existing table and start the game when the table reaches 5 players', () => {
         const chips = 1000;

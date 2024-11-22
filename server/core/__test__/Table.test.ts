@@ -2,10 +2,9 @@ import Table from '../Table';
 import Player from '../Player';
 import Dealer from '../Dealer';
 import { ERROR } from '../../utils/utils';
-import { broadcast } from '../Lobby';
 
 
-jest.mock('../Lobby', () => ({
+jest.mock('../../event/Notifier', () => ({
     broadcast: jest.fn(),
 }));
 

@@ -1,5 +1,5 @@
-import BasePlayer from "../src/BasePlayer";
-import Deck from "../src/Deck";
+import BasePlayer from "@core/BasePlayer";
+import Deck from "@core/Deck";
 import { Card } from "./Card";
 
 class Dealer extends BasePlayer {
