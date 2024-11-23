@@ -1,0 +1,126 @@
+.az6OzocteddnvVyQPhGJ {
+    justify-items: end;
+    color: gray;
+    font-size: .875rem;
+}
+.U7oSrA_repToAG9_yiqr {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    height: 100%;
+}
+
+.BXU8U70gUilEG2gIp7Wx {
+    cursor: pointer;
+}
+
+.Q5JSOgukMyRzGnOzYmXx {
+    width: 200px;
+    fill: var(--text-primary);
+    view-transition-name: brand;
+}
+
+.DKFWVd7XAGJs8Pe4Qcky {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+.c649exSNCj6sFLvofv0v {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 305;
+    border: 1px solid var(--text-primary);
+    border-radius: 8px;
+    background-color: #ffffff;
+    outline: 0;
+    transition-property: background-color;
+    transition-duration: 250ms;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f8f8f8;
+    }
+
+    &:active {
+        background-color: #f0f0f0;
+    }
+}
+.mweSzI97d3bA2WWe7Umm {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.mRC6CeHkF_LlDTd24ISp {
+    aspect-ratio: 1;
+    width: 200px;
+    max-width: 100%;
+    position: relative;
+
+    canvas {
+        width: 100%;
+        height: 100%;
+        border: 1px solid var(--text-primary);
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .ABWU2gH7_hCzThpjlZVn {
+        width: 3rem;
+        height: 3rem;
+        border: 1px solid var(--text-primary);
+        border-radius: 50%;
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+    }
+}
+
+.iwOF_E7jlVWpyqZoccVm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+
+    .RJ6GeA5Ox8g727uAwR8y {
+        outline: 0;
+        font-size: 1rem;
+        min-width: 200px;
+        padding: .75rem;
+        border: 1px solid var(--text-primary);
+        border-radius: 2rem;
+        text-align: center;
+        field-sizing: content;
+    }
+}
+:root {
+    font-size: 16px;
+    font-family: 'Misans TC VF', sans-serif;
+    font-weight: 300;
+    color: #303030;
+    
+    --text-primary: #303030;
+    --text-secondary: #606060;
+    --text-tertiary: #808080;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    box-sizing: border-box ;
+    width: 100vw;
+    max-width: 100svh;
+    height: 100svh;
+    padding: 1rem;
+    margin: 0 auto;
+}

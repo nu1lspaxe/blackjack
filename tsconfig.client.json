@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        // Type Checking
+        "strict": true,
+        "noImplicitOverride": true,
+
+        // Module
+        "target": "es5",
+        "module": "commonjs",
+        "resolveJsonModule": true,
+        "paths": {
+            "@/client/*": ["./src/client/*"],
+            "@utils": ["./src/utils/*"],
+        },
+
+        // Environment
+        "jsx": "react-jsx",
+        "lib": ["dom"],
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "importHelpers": true,
+
+        "plugins": [
+            { "name": "typescript-plugin-css-modules" }
+        ]
+    },
+
+    "include": ["./src/client/*"]
+}
