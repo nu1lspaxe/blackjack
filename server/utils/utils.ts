@@ -14,4 +14,5 @@ export const ERROR = {
   UNDEFINED_CARD: 'Undefined card',
   INVALID_ROOM: 'Room not found',
   ROOM_FULL: 'Room is full',
+  NOT_READY: 'Players are not ready',
 }

@@ -28,6 +28,13 @@
         });
       }
 
+      function startTableMessage(tableCode) {
+        return JSON.stringify({
+          type: "start_table",
+          tableCode,
+        });
+      }
+
       // When the WebSocket connection is open
       socket.addEventListener("open", () => {
         console.log("Connected to WebSocket server");
@@ -46,11 +53,28 @@
         // Handle other types of responses here as needed
         if (data.type === "table_created") {
           console.log("Table created with code:", data.tableCode);
-          let message = joinTableMessage(data.tableCode, 1000, "Bob");
+          
+          let player2 = joinTableMessage(data.tableCode, 1000, "Charlie");
+          socket.send(player2);
+
+          let player3 = joinTableMessage(data.tableCode, 1000, "David");
+          socket.send(player3);
+
+          let player4 = joinTableMessage(data.tableCode, 1000, "Eve");
+          socket.send(player4);
+
+          let player5 = joinTableMessage(data.tableCode, 1000, "Frank");
+          socket.send(player5);
+
+          let message = startTableMessage(data.tableCode);
           socket.send(message);
         }
         if (data.type === "table_joined") {
           console.log("Joined table with code:", data.tableCode);
+        }
+
+        if (data.type === "table_started") {
+          console.log("Table started with code:", data.tableCode);
         }
       });
 

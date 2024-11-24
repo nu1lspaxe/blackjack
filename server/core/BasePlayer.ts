@@ -6,9 +6,12 @@ class BasePlayer {
     private hand: Card[] = [];  
     public name: string;
 
-    constructor(name: string = "NoName") {
+    private tableCode: string;
+
+    constructor(tableCode:string, name: string = "NoName") {
         this.id = generateUUID();
         this.name = name;
+        this.tableCode = tableCode;
     }
 
     public getHand(): Card[] {

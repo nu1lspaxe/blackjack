@@ -20,6 +20,14 @@ class PublishSubscribe {
         this.subscribers[event].push(callback);
     }
 
+    public unsubscribe(event: string, callback: Function): void {
+        if (!this.subscribers[event]) {
+            return;
+        }
+
+        this.subscribers[event] = this.subscribers[event].filter(subscriber => subscriber !== callback);
+    }
+
     public publish(event: string, data: any): void {
         if (!this.subscribers[event]) {
             return;
@@ -30,3 +38,5 @@ class PublishSubscribe {
         });
     }
 }
+
+export default PublishSubscribe;

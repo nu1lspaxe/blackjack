@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { constants } from '@config/constants';
-import { createTable, joinTable } from '@core/Lobby';
+import { createTable, joinTable, startTable } from '@core/Lobby';
 
 const app: Application = express();
 
@@ -23,18 +23,26 @@ wss.on('connection', (ws: WebSocket) => {
     console.log('A client connected');
 
     ws.on('message', (message: string) => {
-        console.log('Received message:', message);
 
         try {
             const jsonData = JSON.parse(message);
+            console.log('Received message:', jsonData);
+
             if (jsonData.type === 'create_table') {
-                let tableCode = createTable(jsonData.chips, jsonData.name);
+                let tableCode = createTable(ws, jsonData.chips, jsonData.name);
+
                 ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
 
             } else if (jsonData.type === 'join_table') {
-                joinTable(jsonData.tableCode, jsonData.chips, jsonData.name);
+                joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
+                
                 ws.send(JSON.stringify({ type: 'table_joined', tableCode: jsonData.tableCode }));
+            } else if (jsonData.type === 'start_table') {
+                startTable(jsonData.tableCode);
+
+                ws.send(JSON.stringify({ type: 'table_started', tableCode: jsonData.tableCode }));
             }
+            
         } catch (error) {
             if (error instanceof Error) {
                 ws.send(JSON.stringify({ type: 'error', message: error.message }));

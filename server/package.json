@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon --require ./src/instrumentation.ts ./api/index.ts",
+    "dev": "nodemon -r tsconfig-paths/register ./api/index.ts",
     "test": "jest --config jest.config.js --color=16m"
   },
   "keywords": [],
@@ -25,6 +25,7 @@
     "nodemon": "^3.1.7",
     "server": "file:",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3",
     "uuid": "^11.0.2",
     "ws": "^8.18.0"

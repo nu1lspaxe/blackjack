@@ -2,22 +2,28 @@ import Player from './Player';
 import Table from './Table';
 import { ERROR, generateTableCode } from '@utils/utils';
 
+import WebSocket from 'ws';
 
+
+// tables<TableCode, Table>
 export const tables: Map<string, Table> = new Map(); 
 
-export function createTable(chips: number, name: string): string {
+export function createTable(ws: WebSocket, chips: number, name: string): string {
     const tableCode = generateTableCode();  
-    const newPlayer = new Player(1, chips, name);
+    const newPlayer = new Player(ws, tableCode, 1, chips, name);
 
-    const table = new Table([newPlayer]);
+    const table = new Table(tableCode);
+    table.addPlayer(newPlayer);
     tables.set(tableCode, table);
 
-    console.log(`Table created with ID: ${tableCode}`);
+    if (tables.get(tableCode)?.players.length === 1) {
+        console.log(`Table ${tableCode} created`);
+    }
 
     return tableCode;
 }
 
-export function joinTable(tableCode: string, chips: number, name: string) {
+export function joinTable(ws: WebSocket, tableCode: string, chips: number, name: string) {
     const table = tables.get(tableCode) ? tables.get(tableCode) : undefined;
 
     if (!table) {
@@ -28,12 +34,25 @@ export function joinTable(tableCode: string, chips: number, name: string) {
         throw new Error(ERROR.ROOM_FULL);
     }
 
-    const newPlayer = new Player(table.players.length + 1, chips, name);
-    table.players.push(newPlayer);
+    const newPlayer = new Player(ws, tableCode, table.players.length + 1, chips, name);
+    table.addPlayer(newPlayer);
+}
 
-    console.log(`Player ${name} joined table ${tableCode}`);
+export function startTable(tableCode: string) {
+    const table = tables.get(tableCode);
+    console.log(table);
 
-    if (table.players.length === 5) {
+    if (!table) {
+        throw new Error(ERROR.INVALID_ROOM);
+    }
+
+    table.players.forEach(player => {
+        if (!player.readyStatus) {
+            throw new Error(ERROR.NOT_READY);
+        }
+    });
+
+    if (table) {
         table.startGame();
     }
 }
