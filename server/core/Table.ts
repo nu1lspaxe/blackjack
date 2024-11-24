@@ -9,7 +9,7 @@ import PublishSubscribe from "@event/PublishSubscribe";
 enum TableStatus {
     OPEN = 'open',
     GOING = 'going',
-    CLOSED = 'closed'
+    END = 'end'
 }
 
 interface TableData {
@@ -35,18 +35,28 @@ class Table {
     public players: Player[] = [];
     private deck!: Deck;
     public round: number = 0;
-    
+
+    // 0: dealer, 1-5: players
+    private currSeat: number = 0;
 
     constructor(code: string) {
         this.id = generateUUID();
         this.dealer = new Dealer(code);
         this.code = code;
 
-        this.pubSub.subscribe(`table/${this.code}/player/joined/`,  (data: any) => {
+        this.pubSub.subscribe(`table/${this.code}/player/joined/`, (data: any) => {
             const { tableCode, message } = data;
             broadcast2Table(tableCode, message);
         });
-        this.pubSub.subscribe(`table/${this.code}/start/`,  (data: any) => {
+        this.pubSub.subscribe(`table/${this.code}/start/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+        this.pubSub.subscribe(`table/${this.code}/next/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+        this.pubSub.subscribe(`table/${this.code}/end/`, (data: any) => {
             const { tableCode, message } = data;
             broadcast2Table(tableCode, message);
         });
@@ -65,12 +75,6 @@ class Table {
             throw new Error(ERROR.TABLE_FULL);
         }
         this.players.push(player);
-
-        // Subscribe to the player's events
-        this.pubSub.publish(`table/${this.code}/player/joined/`, {
-            tableCode: this.code, 
-            message: `Player ${player.name} joined the table`,
-        });
     }
 
     public startGame(): void {
@@ -87,47 +91,57 @@ class Table {
         });
     }
 
-    public nextRound(): void {
-        this.round++;
+    public nextTurn(): TableData {
+        if (this.currSeat === 0 && this.round < 2) {
+            this.round++;
+        }
+
+        let card: Card;
 
         if (this.round === 1) {
+
             // Deal the first card to the dealer
-            let card = this.deck.drawCard();
-            this.dealer.receiveCard(card);
-            this.hands[0] = [card];
+            if (this.currSeat === 0) {
+                this.dealer.resetHand();
 
+                card = this.deck.drawCard();
+                this.dealer.receiveCard(card);
+                this.hands[0] = [card];
 
-            // Deal two cards to each player
-            for (let i = 0; i < 2; i++) {
-                this.players.forEach(player => {
+            } else {
+                // Reset the player's hand and status
+                this.players[this.currSeat - 1].resetHandAndStatus();
+
+                // Deal two cards to the player
+                for (let i = 0; i < 2; i++) {
                     card = this.deck.drawCard();
-                    player.receiveCard(card);
-                    this.hands[player.seat] = [...(this.hands[player.seat] || []), card];
-                });
+                    this.players[this.currSeat - 1].receiveCard(card);
+                    this.hands[this.currSeat] = [...(this.hands[this.currSeat] || []), card];
+                }
             }
 
+            this.currSeat = (this.currSeat + 1) % 6;
+
         } else if (this.round === 2) {
-            // Dealer receives the second card in second round
-            let card = this.deck.drawCard()
-            this.dealer.receiveCard(card);
-            this.hands[0] = [...this.hands[0], card];
 
-
-            // Dealer receives cards until the value is at least 17s
-            while (this.dealer.shouldHit()) {
-                card = this.deck.drawCard()
+            // Dealer receives the second card in second round, and
+            // receives cards until the value is at least 17s
+            if (this.dealer.getHand().length === 1 || this.dealer.shouldHit()) {
+                card = this.deck.drawCard();
                 this.dealer.receiveCard(card);
                 this.hands[0] = [...this.hands[0], card];
 
+                this.isBusted[0] = this.dealer.isBust();
+
+            } else {
+                this.status = TableStatus.END;
             }
 
-            this.calculatePoints();
-            this.status = TableStatus.CLOSED;
-            
         } else {
             throw new Error(ERROR.INVALID_VALUE);
         }
 
+        return this.getTableData();
     }
 
     public calculatePoints(): number[] {
@@ -135,6 +149,7 @@ class Table {
         this.players.forEach((player, index) => {
             this.points[index + 1] = player.calculateHand();
         });
+
         return this.points;
     }
 

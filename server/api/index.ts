@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { constants } from '@config/constants';
-import { createTable, joinTable, startTable, updatePlayer } from '@core/Lobby';
+import { createTable, endTable, joinTable, startTable, tableNextTurn, updatePlayer } from '@core/Lobby';
 
 const app: Application = express();
 
@@ -26,7 +26,7 @@ wss.on('connection', (ws: WebSocket) => {
 
         try {
             const jsonData = JSON.parse(message);
-            console.log('Received message:', jsonData);
+            console.log('Message from client:', jsonData);
 
             switch (jsonData.type) {
                 case 'create_table':
@@ -54,7 +54,17 @@ wss.on('connection', (ws: WebSocket) => {
                     let updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
                     ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo}));
                     break;
-                
+
+                case 'next_turn':
+                    let tableData = tableNextTurn(jsonData.tableCode);
+                    ws.send(JSON.stringify({ type: 'next_turn', tableData: tableData }));
+
+                    if (tableData.status === 'end') {
+                        tableData = endTable(jsonData.tableCode);
+                        ws.send(JSON.stringify({ type: 'table_ended', tableCode: jsonData.tableCode }));
+                    }
+                    break;
+
                 default:
                     throw new Error('Invalid message type');
             }

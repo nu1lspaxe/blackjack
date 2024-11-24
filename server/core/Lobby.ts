@@ -1,3 +1,4 @@
+import PublishSubscribe from '@event/PublishSubscribe';
 import Player from './Player';
 import Table from './Table';
 import { ERROR, generateTableCode } from '@utils/utils';
@@ -6,20 +7,37 @@ import WebSocket from 'ws';
 
 
 // tables<TableCode, Table>
-export const tables: Map<string, Table> = new Map(); 
+export const tables: Map<string, Table> = new Map();
 
-export function createTable(ws: WebSocket, chips: number, name: string): string {
-    const tableCode = generateTableCode();  
+const pubSub = PublishSubscribe.getInstance();
+
+export function createTable(
+    ws: WebSocket,
+    chips: number,
+    name: string
+): string {
+    const tableCode = generateTableCode();
     const newPlayer = new Player(ws, tableCode, 1, chips, name);
 
     const table = new Table(tableCode);
-    table.addPlayer(newPlayer);
     tables.set(tableCode, table);
+
+    table.addPlayer(newPlayer);
+    // Subscribe to the player's events
+    pubSub.publish(`table/${tableCode}/player/joined/`, {
+        tableCode: tableCode,
+        message: `Player ${newPlayer.name} joined the table`,
+    });
 
     return tableCode;
 }
 
-export function joinTable(ws: WebSocket, tableCode: string, chips: number, name: string) {
+export function joinTable(
+    ws: WebSocket,
+    tableCode: string,
+    chips: number,
+    name: string
+) {
     const table = tables.get(tableCode) ? tables.get(tableCode) : undefined;
 
     if (!table) {
@@ -55,9 +73,9 @@ export function startTable(tableCode: string) {
 }
 
 export function updatePlayer(
-    tableCode: string, 
-    seat: number, 
-    chips: number | null = null, 
+    tableCode: string,
+    seat: number,
+    chips: number | null = null,
     readyStatus: boolean | null = null
 ) {
     const table = tables.get(tableCode);
@@ -78,4 +96,37 @@ export function updatePlayer(
     }
 
     return player.toString();
+}
+
+export function tableNextTurn(tableCode: string) {
+    const table = tables.get(tableCode);
+    if (!table) {
+        throw new Error(ERROR.INVALID_TABLE);
+    }
+
+    let tableData = table.nextTurn();
+
+    pubSub.publish(`table/${tableCode}/next/`, {
+        tableCode: tableCode,
+        message: tableData,
+    });
+
+    return tableData;
+}
+
+export function endTable(tableCode: string) {
+    const table = tables.get(tableCode);
+    if (!table) {
+        throw new Error(ERROR.INVALID_TABLE);
+    }
+    table.calculatePoints();
+
+    pubSub.publish(`table/${tableCode}/end/`, {
+        tableCode: tableCode,
+        message: table.getTableData(),
+    });
+
+    tables.delete(tableCode);
+
+    return table.getTableData();
 }
