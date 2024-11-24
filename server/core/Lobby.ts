@@ -16,10 +16,6 @@ export function createTable(ws: WebSocket, chips: number, name: string): string 
     table.addPlayer(newPlayer);
     tables.set(tableCode, table);
 
-    if (tables.get(tableCode)?.players.length === 1) {
-        console.log(`Table ${tableCode} created`);
-    }
-
     return tableCode;
 }
 
@@ -27,23 +23,24 @@ export function joinTable(ws: WebSocket, tableCode: string, chips: number, name:
     const table = tables.get(tableCode) ? tables.get(tableCode) : undefined;
 
     if (!table) {
-        throw new Error(ERROR.INVALID_ROOM);
+        throw new Error(ERROR.INVALID_TABLE);
     }
 
     if (table.players.length >= 5) {
-        throw new Error(ERROR.ROOM_FULL);
+        throw new Error(ERROR.TABLE_FULL);
     }
 
     const newPlayer = new Player(ws, tableCode, table.players.length + 1, chips, name);
     table.addPlayer(newPlayer);
+
+    return newPlayer.seat;
 }
 
 export function startTable(tableCode: string) {
     const table = tables.get(tableCode);
-    console.log(table);
 
     if (!table) {
-        throw new Error(ERROR.INVALID_ROOM);
+        throw new Error(ERROR.INVALID_TABLE);
     }
 
     table.players.forEach(player => {
@@ -55,4 +52,30 @@ export function startTable(tableCode: string) {
     if (table) {
         table.startGame();
     }
+}
+
+export function updatePlayer(
+    tableCode: string, 
+    seat: number, 
+    chips: number | null = null, 
+    readyStatus: boolean | null = null
+) {
+    const table = tables.get(tableCode);
+    if (!table) {
+        throw new Error(ERROR.INVALID_TABLE);
+    }
+    const player = table?.getPlayer(seat);
+    if (!player) {
+        throw new Error(ERROR.INVALID_PLAYER);
+    }
+
+    if (chips) {
+        player.setChips(chips);
+    }
+
+    if (readyStatus) {
+        player.setReadyStatus(readyStatus);
+    }
+
+    return player.toString();
 }

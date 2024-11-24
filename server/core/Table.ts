@@ -1,4 +1,4 @@
-import { broadcast2TablePlayers, broadcast2All } from "@event/Notifier";
+import { broadcast2Table } from "@event/Notifier";
 import { ERROR, generateUUID } from "@utils/utils";
 import { Card, Value } from "./Card";
 import Dealer from "./Dealer";
@@ -42,13 +42,13 @@ class Table {
         this.dealer = new Dealer(code);
         this.code = code;
 
-        this.pubSub.subscribe(`table/:tableCode/player/joined/`, (data: any) => {
+        this.pubSub.subscribe(`table/${this.code}/player/joined/`,  (data: any) => {
             const { tableCode, message } = data;
-            broadcast2TablePlayers(tableCode, message);
+            broadcast2Table(tableCode, message);
         });
-        this.pubSub.subscribe(`table/:tableCode/start/`, (data: any) => {
+        this.pubSub.subscribe(`table/${this.code}/start/`,  (data: any) => {
             const { tableCode, message } = data;
-            broadcast2TablePlayers(tableCode, message);
+            broadcast2Table(tableCode, message);
         });
     }
 
@@ -62,14 +62,14 @@ class Table {
 
     public addPlayer(player: Player): void {
         if (this.players.length >= 5) {
-            throw new Error(ERROR.ROOM_FULL);
+            throw new Error(ERROR.TABLE_FULL);
         }
         this.players.push(player);
 
         // Subscribe to the player's events
         this.pubSub.publish(`table/${this.code}/player/joined/`, {
             tableCode: this.code, 
-            message: player.name,
+            message: `Player ${player.name} joined the table`,
         });
     }
 
@@ -138,7 +138,7 @@ class Table {
         return this.points;
     }
 
-    public getTableData(): string {
+    public getTableData(): TableData {
         let tableData: TableData = {
             id: this.id,
             status: this.status,
@@ -146,7 +146,7 @@ class Table {
             isBusted: this.isBusted,
             points: this.points
         };
-        return JSON.stringify(tableData);
+        return tableData;
     }
 }
 

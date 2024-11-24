@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { constants } from '@config/constants';
-import { createTable, joinTable, startTable } from '@core/Lobby';
+import { createTable, joinTable, startTable, updatePlayer } from '@core/Lobby';
 
 const app: Application = express();
 
@@ -22,27 +22,42 @@ export const wss = new WebSocketServer({ server });
 wss.on('connection', (ws: WebSocket) => {
     console.log('A client connected');
 
-    ws.on('message', (message: string) => {
+    ws.on('message',  (message: string) => {
 
         try {
             const jsonData = JSON.parse(message);
             console.log('Received message:', jsonData);
 
-            if (jsonData.type === 'create_table') {
-                let tableCode = createTable(ws, jsonData.chips, jsonData.name);
+            switch (jsonData.type) {
+                case 'create_table':
+                    let tableCode = createTable(ws, jsonData.chips, jsonData.name);
+                    
+                    ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
+                    break;
 
-                ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
+                case 'join_table':
+                    let seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
 
-            } else if (jsonData.type === 'join_table') {
-                joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
+                    ws.send(JSON.stringify({ 
+                        type: 'table_joined', 
+                        playerName: jsonData.name,
+                        tableCode: jsonData.tableCode,
+                        seat: seat,}));
+                    break;
+
+                case 'start_table':
+                    startTable(jsonData.tableCode);
+                    ws.send(JSON.stringify({ type: 'table_started', tableCode: jsonData.tableCode }));
+                    break;
+
+                case 'update_player':
+                    let updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
+                    ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo}));
+                    break;
                 
-                ws.send(JSON.stringify({ type: 'table_joined', tableCode: jsonData.tableCode }));
-            } else if (jsonData.type === 'start_table') {
-                startTable(jsonData.tableCode);
-
-                ws.send(JSON.stringify({ type: 'table_started', tableCode: jsonData.tableCode }));
+                default:
+                    throw new Error('Invalid message type');
             }
-            
         } catch (error) {
             if (error instanceof Error) {
                 ws.send(JSON.stringify({ type: 'error', message: error.message }));

@@ -26,9 +26,9 @@ enum PlayerAction {
 class Player extends BasePlayer {
 
     public seat: number;
-    public readyStatus: boolean = false;   
+    public readyStatus: boolean = true;   
     public standStatus: boolean = false;
-    public chips: number;         
+    private chips: number;         
     private betAmount: number = 0; 
     private insuranceBet: number = 0; 
 
@@ -44,6 +44,10 @@ class Player extends BasePlayer {
         super(code, name);
         this._ws = ws;
         this.seat = seat;
+
+        if (chips <= 0) {
+            throw new Error(ERROR.INVALID_VALUE);
+        }
         this.chips = chips;
     }
 
@@ -128,11 +132,15 @@ class Player extends BasePlayer {
         return this.chips;
     }
 
-    /**
-     * Toggles the ready status of the player.
-     */
-    public toggleReadyStatus(): void {
-        this.readyStatus = !this.readyStatus;
+    public setChips(chips: number): void {
+        if (chips < 0) {
+            throw new Error(ERROR.INVALID_VALUE);
+        }
+        this.chips = chips;
+    }
+
+    public setReadyStatus(status: boolean): void {
+        this.readyStatus = status;
     }
 
     /**
