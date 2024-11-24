@@ -51,6 +51,11 @@ export function joinTable(
     const newPlayer = new Player(ws, tableCode, table.players.length + 1, chips, name);
     table.addPlayer(newPlayer);
 
+    pubSub.publish(`table/${tableCode}/player/joined/`, {
+        tableCode: tableCode,
+        message: `Player ${newPlayer.name} joined the table`,
+    });
+
     return newPlayer.seat;
 }
 
@@ -69,6 +74,11 @@ export function startTable(tableCode: string) {
 
     if (table) {
         table.startGame();
+
+        pubSub.publish(`table/${tableCode}/start/`, {
+            tableCode: tableCode,
+            message: `Table ${tableCode} has started`,
+        });
     }
 }
 

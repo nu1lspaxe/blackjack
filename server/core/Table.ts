@@ -84,11 +84,6 @@ class Table {
         this.isBusted = [false, false, false, false, false];
         this.points = [0, 0, 0, 0, 0];
         this.round = 0;
-
-        this.pubSub.publish(`table/${this.code}/start/`, {
-            tableCode: this.code,
-            message: this.getTableData(),
-        });
     }
 
     public nextTurn(): TableData {
