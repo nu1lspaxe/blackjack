@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { constants } from '@config/constants';
-import { createTable, endTable, joinTable, startTable, tableNextTurn, updatePlayer } from '@core/Lobby';
+import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, updatePlayer } from '@core/Lobby';
 
 const app: Application = express();
 
@@ -30,13 +30,23 @@ wss.on('connection', (ws: WebSocket) => {
 
             switch (jsonData.type) {
                 case 'create_table':
-                    let tableCode = createTable(ws, jsonData.chips, jsonData.name);
+                    var tableCode = createTable(ws, jsonData.chips, jsonData.name);
                     
                     ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
                     break;
 
+                case 'random_table':
+                    var [tableCode, seat] = randomTable(ws, jsonData.chips, jsonData.name);
+
+                    ws.send(JSON.stringify({ 
+                        'type': 'table_joined', 
+                        playerName: jsonData.name, 
+                        tableCode: tableCode, 
+                        seat: seat }));
+                    break;
+
                 case 'join_table':
-                    let seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
+                    var seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
 
                     ws.send(JSON.stringify({ 
                         type: 'table_joined', 
@@ -51,12 +61,12 @@ wss.on('connection', (ws: WebSocket) => {
                     break;
 
                 case 'update_player':
-                    let updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
+                    var updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
                     ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo}));
                     break;
 
                 case 'next_turn':
-                    let tableData = tableNextTurn(jsonData.tableCode);
+                    var tableData = tableNextTurn(jsonData.tableCode);
                     ws.send(JSON.stringify({ type: 'next_turn', tableData: tableData }));
 
                     if (tableData.status === 'end') {

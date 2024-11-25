@@ -32,6 +32,26 @@ export function createTable(
     return tableCode;
 }
 
+export function randomTable(
+    ws: WebSocket,
+    chips: number, 
+    name: string
+): [string, number] {
+    const randomIdx = Math.floor(Math.random()*tables.size);
+    const tableCode = Array.from(tables.keys())[randomIdx];
+
+    const table = tables.get(tableCode);
+    const newPlayer = new Player(ws, tableCode, table!.players.length + 1, chips, name);
+    table!.addPlayer(newPlayer);
+
+    pubSub.publish(`table/${tableCode}/player/joined/`, {
+        tableCode: tableCode,
+        message: `Player ${newPlayer.name} joined the table`,
+    });
+
+    return [tableCode, newPlayer.seat];
+}
+
 export function joinTable(
     ws: WebSocket,
     tableCode: string,
