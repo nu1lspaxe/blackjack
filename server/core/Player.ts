@@ -163,6 +163,32 @@ class Player extends BasePlayer {
         ", betAmount;" + this.betAmount +
         ", insuranceBet:" + this.insuranceBet + "}"
     }
+    /**
+     * Player make a double down bet, draw one more card and stand
+     * @return {boolean} - Returns true if the double down was successful, false if there are insufficient chips
+     */
+    public doubleDown(): boolean {
+        if (this.betAmount > this.chips) {
+            console.error(ERROR.INVALID_VALUE);
+            return false;
+        }
+
+        this.betAmount *= 2;
+        this.chips -= this.betAmount;
+
+        // end the turn after double down
+        this.standStatus = true;
+        return true;
+    }
+
+    /**
+     * Player surrender the game, get half of the bet amount back
+     */
+    public surrender(): void {
+        this.chips += Math.floor(this.betAmount / 2);
+        this.standStatus = true;
+        this.resetBet();
+    }
 }
 
 export default Player;
