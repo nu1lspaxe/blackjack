@@ -10,8 +10,13 @@ export const generateTableCode = (): string => {
 }
 
 export const ERROR = {
-  INVALID_VALUE: 'Invalid value',
+  INVALID_VALUE: 'Out of range value',
+
   UNDEFINED_CARD: 'Undefined card',
-  INVALID_ROOM: 'Room not found',
-  ROOM_FULL: 'Room is full',
+
+  INVALID_TABLE: 'Table is not found',
+  TABLE_FULL: 'Table is full',
+
+  NOT_READY: 'Players are not ready',
+  INVALID_PLAYER: 'Player is not found',
 }

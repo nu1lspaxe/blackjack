@@ -1,5 +1,8 @@
-import { ERROR } from '../utils/utils';
+import { ERROR } from '@utils/utils';
 import BasePlayer from './BasePlayer';
+import PublishSubscribe from '@event/PublishSubscribe';
+
+import WebSocket from 'ws';
 
 enum PlayerAction {
     Hit = 'hit',
@@ -9,14 +12,27 @@ enum PlayerAction {
     Split = 'split'     
 }
 
+/**
+ * Represents a player in the game.
+ * @extends BasePlayer
+ * @property {number} seat - The seat number of the player
+ * @property {boolean} readyStatus - Represents whether the player is ready to start the game
+ * @property {boolean} standStatus - Represents whether the player has ended their turn
+ * @property {number} chips - The number of chips the player has
+ * @property {number} betAmount - The amount the player has bet
+ * @property {number} insuranceBet - The amount the player has bet for insurance
+ * @property {WebSocket} _ws - The WebSocket connection of the player
+ */
 class Player extends BasePlayer {
 
     public seat: number;
-    public readyStatus: boolean = false;
+    public readyStatus: boolean = true;   
     public standStatus: boolean = false;
-    public chips: number;         
+    private chips: number;         
     private betAmount: number = 0; 
     private insuranceBet: number = 0; 
+
+    public _ws: WebSocket;
 
     /**
      * Creates an instance of a player.
@@ -24,9 +40,14 @@ class Player extends BasePlayer {
      * @param {number} chips - The number of chips the player starts with
      * @param {string} [name="NoName"] - The name of the player (default is "NoName")
      */
-    constructor(seat: number, chips: number, name: string = "NoName") {
-        super(name);
+    constructor(ws: WebSocket, code: string, seat: number, chips: number, name: string = "NoName") {
+        super(code, name);
+        this._ws = ws;
         this.seat = seat;
+
+        if (chips <= 0) {
+            throw new Error(ERROR.INVALID_VALUE);
+        }
         this.chips = chips;
     }
 
@@ -111,11 +132,15 @@ class Player extends BasePlayer {
         return this.chips;
     }
 
-    /**
-     * Toggles the ready status of the player.
-     */
-    public toggleReadyStatus(): void {
-        this.readyStatus = !this.readyStatus;
+    public setChips(chips: number): void {
+        if (chips < 0) {
+            throw new Error(ERROR.INVALID_VALUE);
+        }
+        this.chips = chips;
+    }
+
+    public setReadyStatus(status: boolean): void {
+        this.readyStatus = status;
     }
 
     /**
@@ -129,6 +154,15 @@ class Player extends BasePlayer {
         this.resetBet();
     }
 
+
+    public toString(): string {
+        return "{seat:" + this.seat.toString() + 
+        ", readyStatus:" + this.readyStatus + 
+        ", standStatus" + this.standStatus + 
+        ", chips:" + this.chips + 
+        ", betAmount;" + this.betAmount +
+        ", insuranceBet:" + this.insuranceBet + "}"
+    }
     /**
      * Player make a double down bet, draw one more card and stand
      * @return {boolean} - Returns true if the double down was successful, false if there are insufficient chips

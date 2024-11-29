@@ -1,4 +1,4 @@
-import { generateUUID } from "../utils/utils";
+import { generateUUID } from "@utils/utils";
 import { Card, Value } from "./Card";
 
 class BasePlayer {
@@ -6,9 +6,12 @@ class BasePlayer {
     private hand: Card[] = [];  
     public name: string;
 
-    constructor(name: string = "NoName") {
+    private tableCode: string;
+
+    constructor(tableCode:string, name: string = "NoName") {
         this.id = generateUUID();
         this.name = name;
+        this.tableCode = tableCode;
     }
 
     public getHand(): Card[] {

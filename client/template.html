@@ -10,6 +10,7 @@
     <script>
       // Replace 'localhost' and 'constants.WS_PORT' with your server's URL and port
       const socket = new WebSocket("ws://localhost:3000");
+      let message;
 
       function createTableMessage(chips, name) {
         return JSON.stringify({
@@ -28,29 +29,83 @@
         });
       }
 
+      function startTableMessage(tableCode) {
+        return JSON.stringify({
+          type: "start_table",
+          tableCode,
+        });
+      }
+
+      function updatePlayerMessage(tableCode, playerName, chips, readyStatus) {
+        return JSON.stringify({
+          type: "update_player",
+          tableCode,
+          playerName,
+          chips,
+          readyStatus,
+        });
+      }
+
+      function nextTurnMessage(tableCode) {
+        return JSON.stringify({
+          type: "next_turn",
+          tableCode,
+        });
+      }
+
       // When the WebSocket connection is open
       socket.addEventListener("open", () => {
         console.log("Connected to WebSocket server");
-        let message = createTableMessage(1000, "Alice");
+        message = createTableMessage(1000, "Alice");
         socket.send(message);
       });
 
       // When a message is received from the server
       socket.addEventListener("message", (event) => {
         const data = JSON.parse(event.data);
-        console.log("Message from server:", data);
 
         if (data.type === "error") {
           console.error("Error:", data.message);
         }
+        
         // Handle other types of responses here as needed
         if (data.type === "table_created") {
           console.log("Table created with code:", data.tableCode);
-          let message = joinTableMessage(data.tableCode, 1000, "Bob");
+          
+          let player2 = joinTableMessage(data.tableCode, 1000, "Charlie");
+          socket.send(player2);
+
+          let player3 = joinTableMessage(data.tableCode, 1000, "David");
+          socket.send(player3);
+
+          let player4 = joinTableMessage(data.tableCode, 1000, "Eve");
+          socket.send(player4);
+
+          let player5 = joinTableMessage(data.tableCode, 1000, "Frank");
+          socket.send(player5);
+
+          message = startTableMessage(data.tableCode);
           socket.send(message);
         }
+
         if (data.type === "table_joined") {
-          console.log("Joined table with code:", data.tableCode);
+        }
+
+        if (data.type === "table_started") {
+          console.log("Table started with code:", data.tableCode);
+
+          for (let i = 0; i < 10; i++) {
+            message = nextTurnMessage(data.tableCode);
+            socket.send(message);
+          }
+        }
+
+        if (data.type === "broadcast_table") {
+          console.log("Broadcast table info:", data.message);
+        }
+
+        if (data.type === "player_updated") {
+          console.log(`Updated player info:`, data.playerInfo);
         }
       });
 
