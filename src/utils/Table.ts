@@ -1,15 +1,15 @@
-import { broadcast } from "./Lobby";
-import { ERROR } from "./errors";
+import { broadcast2Table } from "./Notifier";
+import { ERROR, generateUUID } from "./utils";
 import { Card, Value } from "./Card";
 import Dealer from "./Dealer";
 import Deck from "./Deck";
 import Player from "./Player";
-import { randomUUID } from "crypto";
+import PublishSubscribe from "./PublishSubscribe";
 
 enum TableStatus {
     OPEN = 'open',
     GOING = 'going',
-    CLOSED = 'closed'
+    END = 'end'
 }
 
 interface TableData {
@@ -22,21 +22,59 @@ interface TableData {
 
 
 class Table {
+    private pubSub = PublishSubscribe.getInstance();
+
     private id: string;
-    private dealer: Dealer;
-    public players: Player[];
+    public status: TableStatus = TableStatus.OPEN;
     public hands: Card[][] = [];
     public isBusted!: boolean[];
     public points!: number[];
 
-    public status: TableStatus = TableStatus.OPEN;
-    public deck!: Deck;
+    private code: string;
+    private dealer: Dealer;
+    public players: Player[] = [];
+    private deck!: Deck;
     public round: number = 0;
 
-    constructor(players: Player[]) {
-        this.id = randomUUID();
-        this.dealer = new Dealer();
-        this.players = players;
+    // 0: dealer, 1-5: players
+    private currSeat: number = 0;
+
+    constructor(code: string) {
+        this.id = generateUUID();
+        this.dealer = new Dealer(code);
+        this.code = code;
+
+        this.pubSub.subscribe(`table/${this.code}/player/joined/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+        this.pubSub.subscribe(`table/${this.code}/start/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+        this.pubSub.subscribe(`table/${this.code}/next/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+        this.pubSub.subscribe(`table/${this.code}/end/`, (data: any) => {
+            const { tableCode, message } = data;
+            broadcast2Table(tableCode, message);
+        });
+    }
+
+    public getPlayer(i: number): Player {
+        return this.players[i];
+    }
+
+    public playerInfo(i: number) {
+        return this.players[i].toString();
+    }
+
+    public addPlayer(player: Player): void {
+        if (this.players.length >= 5) {
+            throw new Error(ERROR.TABLE_FULL);
+        }
+        this.players.push(player);
     }
 
     public startGame(): void {
@@ -46,51 +84,59 @@ class Table {
         this.isBusted = [false, false, false, false, false];
         this.points = [0, 0, 0, 0, 0];
         this.round = 0;
-
-        broadcast(this.getTableData());
     }
 
-    public nextRound(): void {
-        this.round++;
+    public nextTurn(): TableData {
+        if (this.currSeat === 0 && this.round < 2) {
+            this.round++;
+        }
+
+        let card: Card;
 
         if (this.round === 1) {
-            // Deal the first card to the dealer
-            let card = this.deck.drawCard();
-            this.dealer.receiveCard(card);
-            this.hands[0] = [card];
 
-            // Deal two cards to each player
-            for (let i = 0; i < 2; i++) {
-                this.players.forEach(player => {
+            // Deal the first card to the dealer
+            if (this.currSeat === 0) {
+                this.dealer.resetHand();
+
+                card = this.deck.drawCard();
+                this.dealer.receiveCard(card);
+                this.hands[0] = [card];
+
+            } else {
+                // Reset the player's hand and status
+                this.players[this.currSeat - 1].resetHandAndStatus();
+
+                // Deal two cards to the player
+                for (let i = 0; i < 2; i++) {
                     card = this.deck.drawCard();
-                    player.receiveCard(card);
-                    this.hands[player.seat] = [...(this.hands[player.seat] || []), card];
-                });
+                    this.players[this.currSeat - 1].receiveCard(card);
+                    this.hands[this.currSeat] = [...(this.hands[this.currSeat] || []), card];
+                }
             }
-            broadcast(this.getTableData());
+
+            this.currSeat = (this.currSeat + 1) % 6;
 
         } else if (this.round === 2) {
-            // Dealer receives the second card in second round
-            let card = this.deck.drawCard()
-            this.dealer.receiveCard(card);
-            this.hands[0] = [...this.hands[0], card];
 
-            // Dealer receives cards until the value is at least 17s
-            if (this.dealer.shouldHit()) {
-                card = this.deck.drawCard()
+            // Dealer receives the second card in second round, and
+            // receives cards until the value is at least 17s
+            if (this.dealer.getHand().length === 1 || this.dealer.shouldHit()) {
+                card = this.deck.drawCard();
                 this.dealer.receiveCard(card);
                 this.hands[0] = [...this.hands[0], card];
-            }
-            broadcast(this.getTableData());
 
-            this.calculatePoints();
-            this.status = TableStatus.CLOSED;
-            broadcast(this.getTableData());
+                this.isBusted[0] = this.dealer.isBust();
+
+            } else {
+                this.status = TableStatus.END;
+            }
 
         } else {
             throw new Error(ERROR.INVALID_VALUE);
         }
 
+        return this.getTableData();
     }
 
     public calculatePoints(): number[] {
@@ -98,11 +144,11 @@ class Table {
         this.players.forEach((player, index) => {
             this.points[index + 1] = player.calculateHand();
         });
+
         return this.points;
     }
 
-
-    public getTableData(): string {
+    public getTableData(): TableData {
         let tableData: TableData = {
             id: this.id,
             status: this.status,
@@ -110,9 +156,8 @@ class Table {
             isBusted: this.isBusted,
             points: this.points
         };
-        return JSON.stringify(tableData);
+        return tableData;
     }
-
 }
 
 export default Table;   

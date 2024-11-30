@@ -1,14 +1,17 @@
+import { generateUUID } from "./utils";
 import { Card, Value } from "./Card";
-import { randomUUID } from "crypto";
 
 class BasePlayer {
     private id: string;
     private hand: Card[] = [];  
     public name: string;
 
-    constructor(name: string = "NoName") {
-        this.id = randomUUID();
+    private tableCode: string;
+
+    constructor(tableCode:string, name: string = "NoName") {
+        this.id = generateUUID();
         this.name = name;
+        this.tableCode = tableCode;
     }
 
     public getHand(): Card[] {

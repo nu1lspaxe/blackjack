@@ -1,4 +1,4 @@
-import { ERROR } from "./errors";
+import { ERROR } from "./utils";
 import { Card, Value, Suit } from "./Card";
 
 class Deck {
