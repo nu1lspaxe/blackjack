@@ -13,7 +13,7 @@
         "esModuleInterop": true,
         "paths": {
             "@/*": ["./src/*"],
-            "@utils": ["./src/utils/*"],
+            "@utils": ["./src/core/*"],
         },
 
         // Completeness

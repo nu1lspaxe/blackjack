@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 
 import serveStatic from "serve-static";
 
-import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, updatePlayer } from "./utils/Lobby";
+import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, updatePlayer } from "./core/Lobby";
 
 const server = createServer();
 
