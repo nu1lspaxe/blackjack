@@ -11,7 +11,7 @@
         "resolveJsonModule": true,
         "paths": {
             "@/client/*": ["./src/client/*"],
-            "@utils": ["./src/utils/*"],
+            "@utils": ["./src/core/*"],
         },
 
         // Environment

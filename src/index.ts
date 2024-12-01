@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 
 import serveStatic from "serve-static";
 
-import { createTable, joinTable } from "./utils/Lobby";
+import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, updatePlayer } from "./core/Lobby";
 
 const server = createServer();
 
@@ -25,18 +25,61 @@ export const wss = new WebSocketServer({ server });
 wss.on('connection', (ws: WebSocket) => {
     console.log('A client connected');
 
-    ws.on('message', (message: string) => {
-        console.log('Received message:', message);
+    ws.on('message',  (message: string) => {
 
         try {
             const jsonData = JSON.parse(message);
-            if (jsonData.type === 'create_table') {
-                let tableCode = createTable(jsonData.chips, jsonData.name);
-                ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode }));
+            console.log('Message from client:', jsonData);
 
-            } else if (jsonData.type === 'join_table') {
-                joinTable(jsonData.tableCode, jsonData.chips, jsonData.name);
-                ws.send(JSON.stringify({ type: 'table_joined', tableCode: jsonData.tableCode }));
+            switch (jsonData.type) {
+                case 'create_table':
+                    var tableCode = createTable(ws, jsonData.chips, jsonData.name);
+                    
+                    ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
+                    break;
+
+                case 'random_table':
+                    var [tableCode, seat] = randomTable(ws, jsonData.chips, jsonData.name);
+
+                    ws.send(JSON.stringify({ 
+                        'type': 'table_joined', 
+                        playerName: jsonData.name, 
+                        tableCode: tableCode, 
+                        seat: seat }));
+                    break;
+
+                case 'join_table':
+                    var seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
+
+                    ws.send(JSON.stringify({ 
+                        type: 'table_joined', 
+                        playerName: jsonData.name,
+                        tableCode: jsonData.tableCode,
+                        seat: seat,}));
+                    break;
+
+                case 'start_table':
+                    startTable(jsonData.tableCode);
+                    ws.send(JSON.stringify({ type: 'table_started', tableCode: jsonData.tableCode }));
+                    break;
+
+                case 'update_player':
+                    var updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
+                    ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo}));
+                    break;
+
+                case 'next_turn':
+                    var tableData = tableNextTurn(jsonData.tableCode);
+                    ws.send(JSON.stringify({ type: 'next_turn', tableData: tableData }));
+
+                    if (tableData.status === 'end') {
+                        tableData = endTable(jsonData.tableCode);
+                        ws.send(JSON.stringify({ type: 'table_ended', tableCode: jsonData.tableCode }));
+                    }
+                    break;
+
+                default:
+                    throw new Error('Invalid message type');
             }
         } catch (error) {
             if (error instanceof Error) {
