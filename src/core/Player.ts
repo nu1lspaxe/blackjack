@@ -155,7 +155,7 @@ class Player extends BasePlayer {
     }
 
 
-    public toString(): string {
+    public override toString(): string {
         return "{seat:" + this.seat.toString() + 
         ", readyStatus:" + this.readyStatus + 
         ", standStatus" + this.standStatus + 
