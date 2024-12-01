@@ -16,7 +16,7 @@
 
         // Environment
         "jsx": "react-jsx",
-        "lib": ["dom"],
+        "lib": ["dom", "esnext"],
         "skipLibCheck": true,
         "esModuleInterop": true,
         "importHelpers": true,

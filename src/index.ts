@@ -12,12 +12,13 @@ const server = createServer();
 const staticResourceHandler = serveStatic("./public", { index: ["index.html"] });
 server.addListener("request", function (req, res) {
     staticResourceHandler(req, res, function (err) {
-        console.log(err);
+        if (err)
+            console.log('Error: ', err);
     });
 });
 
 // Create 
-const wsServer = new WebSocketServer({ server });
+// const wsServer = new WebSocketServer({ server });
 
 // Initialize WebSocket server using the same HTTP server
 export const wss = new WebSocketServer({ server });
@@ -25,7 +26,7 @@ export const wss = new WebSocketServer({ server });
 wss.on('connection', (ws: WebSocket) => {
     console.log('A client connected');
 
-    ws.on('message',  (message: string) => {
+    ws.on('message', (message: string) => {
 
         try {
             const jsonData = JSON.parse(message);
@@ -34,28 +35,30 @@ wss.on('connection', (ws: WebSocket) => {
             switch (jsonData.type) {
                 case 'create_table':
                     var tableCode = createTable(ws, jsonData.chips, jsonData.name);
-                    
-                    ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode}));
+
+                    ws.send(JSON.stringify({ type: 'table_created', tableCode: tableCode }));
                     break;
 
                 case 'random_table':
                     var [tableCode, seat] = randomTable(ws, jsonData.chips, jsonData.name);
 
-                    ws.send(JSON.stringify({ 
-                        'type': 'table_joined', 
-                        playerName: jsonData.name, 
-                        tableCode: tableCode, 
-                        seat: seat }));
+                    ws.send(JSON.stringify({
+                        'type': 'table_joined',
+                        playerName: jsonData.name,
+                        tableCode: tableCode,
+                        seat: seat
+                    }));
                     break;
 
                 case 'join_table':
                     var seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
 
-                    ws.send(JSON.stringify({ 
-                        type: 'table_joined', 
+                    ws.send(JSON.stringify({
+                        type: 'table_joined',
                         playerName: jsonData.name,
                         tableCode: jsonData.tableCode,
-                        seat: seat,}));
+                        seat: seat,
+                    }));
                     break;
 
                 case 'start_table':
@@ -65,7 +68,7 @@ wss.on('connection', (ws: WebSocket) => {
 
                 case 'update_player':
                     var updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
-                    ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo}));
+                    ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo }));
                     break;
 
                 case 'next_turn':
@@ -94,18 +97,19 @@ wss.on('connection', (ws: WebSocket) => {
 });
 
 // Graceful shutdown for WebSocket server
-function gracefulShutdown() {
-    wss.close();
-    server.close(() => {
-        console.log('Server and WebSocket closed');
-        process.exit(0);
-    });
-}
+// function gracefulShutdown() {
+//     wss.close();
+//     server.close(() => {
+//         console.log('Server and WebSocket closed');
+//         process.exit(0);
+//     });
+// }
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+// process.on('SIGTERM', gracefulShutdown);
+// process.on('SIGINT', gracefulShutdown);
 
 // Start the server
 server.listen(process.env.PORT ?? 5000, () => {
     console.log(`Server ready on port ${(<AddressInfo>server.address()).port}.`);
+    console.log(wss.address());
 });

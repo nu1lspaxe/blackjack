@@ -29,6 +29,7 @@ export class OrderedEmiiter<T extends EmitMap = any> extends Emitter<T> {
         const listeners = this.listeners[name];
         if (!listeners) return;
 
+
         for (const listener of listeners)
             listener.apply(this, args);
 
@@ -39,12 +40,14 @@ export class OrderedEmiiter<T extends EmitMap = any> extends Emitter<T> {
     }
     public prependListener<K extends keyof T>(name: K, listener: (this: this, ...args: T[K]) => unknown): void {
         const listeners = this.listeners[name];
-        if (!listeners) return;
+        if (!listeners) 
+            return void (this.listeners[name] = [listener]);
         listeners.unshift(listener);
     }
     public appendListener<K extends keyof T>(name: K, listener: (this: this, ...args: T[K]) => unknown): void {
         const listeners = this.listeners[name];
-        if (!listeners) return;
+        if (!listeners) 
+            return void (this.listeners[name] = [listener]);
         listeners.push(listener);
     }
     public unlisten<K extends keyof T>(name: K, listener: (this: this, ...args: T[K]) => unknown): void {
