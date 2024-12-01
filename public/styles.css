@@ -1,9 +1,15 @@
-.az6OzocteddnvVyQPhGJ {
+/*!*******************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/main-screen/index.module.css ***!
+  \*******************************************************************************************************************************/
+.src-client-screens-main-screen-index-module-css_hint {
     justify-items: end;
     color: gray;
     font-size: .875rem;
 }
-.U7oSrA_repToAG9_yiqr {
+/*!*********************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/screens.module.css ***!
+  \*********************************************************************************************************************/
+.src-client-screens-screens-module-css_frame {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -13,30 +19,33 @@
     height: 100%;
 }
 
-.BXU8U70gUilEG2gIp7Wx {
+.src-client-screens-screens-module-css_clickable {
     cursor: pointer;
 }
 
-.Q5JSOgukMyRzGnOzYmXx {
+.src-client-screens-screens-module-css_brand {
     width: 200px;
     fill: var(--text-primary);
     view-transition-name: brand;
 }
 
-.DKFWVd7XAGJs8Pe4Qcky {
+.src-client-screens-screens-module-css_back {
     position: absolute;
     top: 1rem;
     left: 1rem;
     color: var(--text-primary);
     text-decoration: none;
 }
-.c649exSNCj6sFLvofv0v {
+/*!***********************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/components/button.module.css ***!
+  \***********************************************************************************************************************/
+.src-client-components-button-module-css_button {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     font-size: 1rem;
-    font-weight: 305;
+    font-weight: 300;
     border: 1px solid var(--text-primary);
     border-radius: 8px;
     background-color: #ffffff;
@@ -53,12 +62,18 @@
         background-color: #f0f0f0;
     }
 }
-.mweSzI97d3bA2WWe7Umm {
+/*!*****************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/main-menu/index.module.css ***!
+  \*****************************************************************************************************************************/
+.src-client-screens-main-menu-index-module-css_button-group {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
-.mRC6CeHkF_LlDTd24ISp {
+/*!********************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/random-match/index.module.css ***!
+  \********************************************************************************************************************************/
+.src-client-screens-random-match-index-module-css_avatar {
     aspect-ratio: 1;
     width: 200px;
     max-width: 100%;
@@ -72,7 +87,7 @@
         overflow: hidden;
     }
 
-    .ABWU2gH7_hCzThpjlZVn {
+    .src-client-screens-random-match-index-module-css_change-button {
         width: 3rem;
         height: 3rem;
         border: 1px solid var(--text-primary);
@@ -83,13 +98,13 @@
     }
 }
 
-.iwOF_E7jlVWpyqZoccVm {
+.src-client-screens-random-match-index-module-css_name {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: .5rem;
 
-    .RJ6GeA5Ox8g727uAwR8y {
+    .src-client-screens-random-match-index-module-css_input {
         outline: 0;
         font-size: 1rem;
         min-width: 200px;
@@ -100,6 +115,62 @@
         field-sizing: content;
     }
 }
+/*!*****************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/room-join/index.module.css ***!
+  \*****************************************************************************************************************************/
+
+.src-client-screens-room-join-index-module-css_title {
+    font-weight: 300;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.src-client-screens-room-join-index-module-css_label {
+    font-weight: 300;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.src-client-screens-room-join-index-module-css_divider {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    &::before,
+    &::after {
+        display: block;
+        content: '';
+        width: 120px;
+        flex-shrink: 1;
+        flex: 1;
+        border: .5px solid var(--text-primary);
+    }
+}
+
+.src-client-screens-room-join-index-module-css_block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    align-items: center;
+}
+
+.src-client-screens-room-join-index-module-css_input {
+    width: 240px;
+    font-size: 1.5rem;
+    padding: 8px;
+    border: 1px solid var(--text-primary);
+    text-align: center;
+    font-weight: 300;
+    border-radius: .25rem;
+
+    &::placeholder {
+        font-size: 1.25rem;
+    }
+}
+/*!****************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/index.css ***!
+  \****************************************************************************************************/
 :root {
     font-size: 16px;
     font-family: 'Misans TC VF', sans-serif;

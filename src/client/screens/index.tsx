@@ -3,6 +3,7 @@ import { createMemoryRouter, RouteObject } from 'react-router-dom';
 import MainScreen from './main-screen';
 import MainMenu from './main-menu';
 import RandomMatch from './random-match';
+import RoomJoin from './room-join';
 
 const routes: RouteObject[] = [
     {
@@ -19,7 +20,7 @@ const routes: RouteObject[] = [
     },
     {
         path: '/join',
-        element: <></>
+        element: <RoomJoin />
     },
     {
         path: '/waiting',

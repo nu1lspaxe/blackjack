@@ -15,7 +15,7 @@ export const MainMenu: FunctionComponent = function () {
             <Brand className={screenStyles.brand} />
             <div className={styles["button-group"]}>
                 <Button onClick={() => navigate('/match', { viewTransition: true })}>Random Match</Button>
-                <Button>Join Room</Button>
+                <Button onClick={() => navigate('/join', { viewTransition: true })}>Join Room</Button>
             </div>
         </div>
     );
