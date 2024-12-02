@@ -139,8 +139,16 @@ class Player extends BasePlayer {
         this.chips = chips;
     }
 
+    public getReadyStatus(): boolean {
+        return this.readyStatus;
+    }
+
     public setReadyStatus(status: boolean): void {
         this.readyStatus = status;
+    }
+
+    public toggleReadyStatus(): void {
+        this.readyStatus = !this.readyStatus;
     }
 
     /**
@@ -153,7 +161,6 @@ class Player extends BasePlayer {
         this.readyStatus = false;
         this.resetBet();
     }
-
 
     public override toString(): string {
         return "{seat:" + this.seat.toString() + 
