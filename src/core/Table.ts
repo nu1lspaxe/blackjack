@@ -158,6 +158,14 @@ class Table {
         };
         return tableData;
     }
+
+    public getPlayerLen(): number {
+        return this.players.length;
+    }
+
+    public getDeck(): Deck {
+        return this.deck;
+    }
 }
 
 export default Table;   
