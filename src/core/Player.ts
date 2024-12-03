@@ -179,10 +179,10 @@ class Player extends BasePlayer {
             console.error(ERROR.INVALID_VALUE);
             return false;
         }
-
-        this.betAmount *= 2;
+        
         this.chips -= this.betAmount;
-
+        this.betAmount *= 2;
+        
         // end the turn after double down
         this.standStatus = true;
         return true;
