@@ -127,9 +127,12 @@ class Table {
                 this.hands[0] = [...this.hands[0], card];
 
                 this.isBusted[0] = this.dealer.isBust();
-
-            } else {
-                this.status = TableStatus.END;
+                if (!this.dealer.shouldHit()) {
+                    this.status = TableStatus.END;
+                    this.round++;
+                }
+            // } else {
+            //     this.status = TableStatus.END;
             }
 
         } else {
