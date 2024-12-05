@@ -7,6 +7,8 @@ type GameEventMap = {
     "table_joined": [message: { tableCode: string, seat: number }],
     "error": [message: any],
     "opponents": [opponents: string[]],
+    "next_turn": [tableData: any],
+    "table_ended": [tableCode: string],
 };
 
 export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap> {
@@ -17,6 +19,8 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
 
     public opponents: string[];
     public playerName: string;
+
+    public readyStatus: boolean = false;
 
     public get isConnecting(): boolean {
         return Boolean(this.connection);
@@ -116,11 +120,12 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
 
     public changeName(name: string): void {
         this.playerName = name;
-        // this.send({ type: "update_player", tableCode: this.roomCode, chips: 1000, name, readyStatus: false });
+        // Why chips is passing as seat number?
+        this.send({ type: "update_player", tableCode: this.roomCode, chips: this.seat, name, readyStatus: this.readyStatus });
     }
 
     public changeReadyState(ready: boolean): void {
-        // this.send({ type: "update_player", tableCode: this.roomCode, chips: 1000, name: this.playerName, readyStatus: ready });
+        this.send({ type: "update_player", tableCode: this.roomCode, chips: this.seat, name: this.playerName, readyStatus: ready });
     }
 
     public startGame(): void {
