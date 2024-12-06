@@ -1,10 +1,10 @@
 # Blackjack
 
-🔗 [Link](https://blackjack-game-server.vercel.app)
+## Build
 
-## MongoDB
-
-- Place `x509-cert.pem` into `/server/config/`. (Ask me for credential file)
+1. `npm build:client` - 打包網頁程式
+2. `npm build:server` - 打包伺服器程式
+3. `npm start` - 執行程式
 
 ## Transmission Message
 

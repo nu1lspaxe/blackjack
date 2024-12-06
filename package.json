@@ -10,7 +10,7 @@
     "dev:build:server": "node .\\scripts\\server.build.js -w",
     "build:client": "node .\\scripts\\client.build.js -prod",
     "build:server": "node .\\scripts\\server.build.js -prod",
-    "start": "node --require .\\dist\\instrumentations.js .\\dist\\index.js"
+    "start": "node --require .\\dist\\instrumentation.js .\\dist\\index.js"
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
