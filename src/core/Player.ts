@@ -143,6 +143,10 @@ class Player extends BasePlayer {
         return this.readyStatus;
     }
 
+    public getSeat(): number {
+        return this.seat;
+    }
+
     public setReadyStatus(status: boolean): void {
         this.readyStatus = status;
     }
@@ -161,6 +165,7 @@ class Player extends BasePlayer {
         this.readyStatus = false;
         this.resetBet();
     }
+
 
     public override toString(): string {
         return "{seat:" + this.seat.toString() + 

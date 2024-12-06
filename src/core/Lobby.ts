@@ -22,11 +22,11 @@ export function createTable(
     const table = new Table(tableCode);
     tables.set(tableCode, table);
 
-    table.addPlayer(newPlayer);
+    let tableData = table.addPlayer(newPlayer);
     // Subscribe to the player's events
     pubSub.publish(`table/${tableCode}/player/joined/`, {
         tableCode: tableCode,
-        message: `Player ${newPlayer.name} joined the table`,
+        message: tableData,
     });
 
     return tableCode;
@@ -42,11 +42,11 @@ export function randomTable(
 
     const table = tables.get(tableCode);
     const newPlayer = new Player(ws, tableCode, table!.players.length + 1, chips, name);
-    table!.addPlayer(newPlayer);
+    let tableData = table!.addPlayer(newPlayer);
 
     pubSub.publish(`table/${tableCode}/player/joined/`, {
         tableCode: tableCode,
-        message: `Player ${newPlayer.name} joined the table`,
+        message: tableData,
     });
 
     return [tableCode, newPlayer.seat];
@@ -69,11 +69,11 @@ export function joinTable(
     }
 
     const newPlayer = new Player(ws, tableCode, table.players.length + 1, chips, name);
-    table.addPlayer(newPlayer);
+    let tableData = table.addPlayer(newPlayer);
 
     pubSub.publish(`table/${tableCode}/player/joined/`, {
         tableCode: tableCode,
-        message: `Player ${newPlayer.name} joined the table`,
+        message: tableData,
     });
 
     return newPlayer.seat;
@@ -93,11 +93,11 @@ export function startTable(tableCode: string) {
     });
 
     if (table) {
-        table.startGame();
+        let tableData = table.startGame();
 
         pubSub.publish(`table/${tableCode}/start/`, {
             tableCode: tableCode,
-            message: `Table ${tableCode} has started`,
+            message: tableData,
         });
     }
 }

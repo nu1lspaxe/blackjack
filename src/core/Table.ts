@@ -18,6 +18,8 @@ interface TableData {
     hands: Card[][];
     isBusted: boolean[];
     points: number[];
+    playersName: string[];
+    playersSeat: number[];
 }
 
 
@@ -70,20 +72,23 @@ class Table {
         return this.players[i].toString();
     }
 
-    public addPlayer(player: Player): void {
+    public addPlayer(player: Player): TableData {
         if (this.players.length >= 5) {
             throw new Error(ERROR.TABLE_FULL);
         }
         this.players.push(player);
+        return this.getTableData();
     }
 
-    public startGame(): void {
+    public startGame(): TableData {
         this.status = TableStatus.GOING;
         this.deck = new Deck();
         this.hands = [];
         this.isBusted = [false, false, false, false, false];
         this.points = [0, 0, 0, 0, 0];
         this.round = 0;
+
+        return this.getTableData();
     }
 
     public nextTurn(): TableData {
@@ -157,7 +162,9 @@ class Table {
             status: this.status,
             hands: this.hands,
             isBusted: this.isBusted,
-            points: this.points
+            points: this.points,
+            playersName: this.players.map(player => player.toString()),
+            playersSeat: this.players.map(player => player.getSeat()),
         };
         return tableData;
     }
