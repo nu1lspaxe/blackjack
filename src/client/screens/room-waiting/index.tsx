@@ -5,17 +5,20 @@ import { gameAgent } from "@/client/utils/game";
 
 import * as styles from "./index.module.css";
 import * as screenStyles from "@/client/screens/screens.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { classname } from "@/client/utils";
 
 const RoomDisplay: FunctionComponent<PropsWithChildren> = function (props) {
+
+    const navigate = useNavigate();
+    
     const [playerName, setPlayerName] = useState(gameAgent.playerName);
     const [opponents, setOpponents] = useState(gameAgent.opponents);
 
     function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
         const playerName = event.target.value;
         setPlayerName(playerName);
-        // gameAgent.changeName(playerName)
+        gameAgent.changeName(playerName)
     }
 
     useEffect(() => {
@@ -27,27 +30,38 @@ const RoomDisplay: FunctionComponent<PropsWithChildren> = function (props) {
         return () => gameAgent.unlisten("opponents", handleOpponentChange);
     }, [opponents]);
 
+    
+    useEffect(() => {
+        function handleStart(status: boolean) {
+            if (status)
+                navigate("/game");
+        }
+
+        gameAgent.listen("game_started", handleStart);
+        return () => gameAgent.unlisten("game_started", handleStart);
+    }, []);
+
     return (
         <div className={screenStyles.frame}>
             <Link className={screenStyles.back} to="/menu" viewTransition>〈 Back to Menu</Link>
             <h1 className={styles.code}>Room Code: {gameAgent.roomCode}</h1>
             <div className={styles.players}>
-                <div className={styles.oppenent}>
+                <div className={styles.opponent}>
                     <div className={styles.name}>{gameAgent.opponents[0] ?? "--"}</div>
                     <div className={styles.view}></div>
                 </div>
-                <div className={styles.oppenent}>
+                <div className={styles.opponent}>
                     <div className={styles.name}>{gameAgent.opponents[1] ?? "--"}</div>
                     <div className={styles.view}></div>
                 </div>
                 <div className={styles.player}>
                     <div className={styles.view}></div>
                 </div>
-                <div className={styles.oppenent}>
+                <div className={styles.opponent}>
                     <div className={styles.view}></div>
                     <div className={styles.name}>{gameAgent.opponents[2] ?? "--"}</div>
                 </div>
-                <div className={styles.oppenent}>
+                <div className={styles.opponent}>
                     <div className={styles.view}></div>
                     <div className={styles.name}>{gameAgent.opponents[3] ?? "--"}</div>
                 </div>
@@ -64,7 +78,7 @@ export const RoomWaiting: FunctionComponent = function () {
 
     function handleReady() {
         setReadyState(!readyState);
-        // gameAgent.changeReadyState(readyState);
+        gameAgent.changeReadyState(readyState);
     }
 
     return (
@@ -76,10 +90,14 @@ export const RoomWaiting: FunctionComponent = function () {
 
 export const RoomHosting: FunctionComponent = function () {
 
+    function handleStart() {
+        gameAgent.startGame();
+    }
+
     return (
         <RoomDisplay>
             <div className={styles.buttons}>
-                <Button>Start</Button>
+                <Button onClick={handleStart}>Start</Button>
                 <Button>Settings</Button>
             </div>
         </RoomDisplay>

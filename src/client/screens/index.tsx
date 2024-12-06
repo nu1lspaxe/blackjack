@@ -31,10 +31,10 @@ const routes: RouteObject[] = [
         path: '/hosting',
         element: <RoomHosting />
     },
-    // {
-    //     path: '/lobby',
-    //     element: <></>
-    // }
+    {
+        path: '/game',
+        element: <div>Game</div>
+    }
 ];
 
 export const router = createMemoryRouter(routes, {

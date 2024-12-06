@@ -29,9 +29,8 @@ export class OrderedEmiiter<T extends EmitMap = any> extends Emitter<T> {
         const listeners = this.listeners[name];
         if (!listeners) return;
 
-
         for (const listener of listeners)
-            listener.apply(this, args);
+            listener?.apply(this, args);
 
         this.listeners[name] = listeners.filter(Boolean);
     }

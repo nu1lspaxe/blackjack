@@ -163,7 +163,7 @@ class Table {
             hands: this.hands,
             isBusted: this.isBusted,
             points: this.points,
-            playersName: this.players.map(player => player.toString()),
+            playersName: this.players.map(player => player.name),
             playersSeat: this.players.map(player => player.getSeat()),
         };
         return tableData;

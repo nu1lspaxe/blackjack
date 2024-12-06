@@ -4,7 +4,8 @@ import { WebSocketServer, WebSocket } from "ws";
 
 import serveStatic from "serve-static";
 
-import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, updatePlayer } from "./core/Lobby";
+import { createTable, endTable, joinTable, randomTable, startTable, tableNextTurn, tables, updatePlayer } from "./core/Lobby";
+import { broadcast2Table } from "./core/Notifier";
 
 const server = createServer();
 
@@ -52,11 +53,12 @@ wss.on('connection', (ws: WebSocket) => {
 
                 case 'join_table':
                     var seat = joinTable(ws, jsonData.tableCode, jsonData.chips, jsonData.name);
-
+                    const table = tables.get(jsonData.tableCode)!;
                     ws.send(JSON.stringify({
                         type: 'table_joined',
                         playerName: jsonData.name,
-                        tableCode: jsonData.tableCode,
+                        // tableCode: jsonData.tableCode,
+                        table: { code: jsonData.tableCode, players: table.players },
                         seat: seat,
                     }));
                     break;
@@ -67,8 +69,24 @@ wss.on('connection', (ws: WebSocket) => {
                     break;
 
                 case 'update_player':
-                    var updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
-                    ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo }));
+                    // var updatedInfo = updatePlayer(jsonData.tableCode, jsonData.chips, jsonData.name, jsonData.readyStatus);
+                    // ws.send(JSON.stringify({ type: 'player_updated', playerInfo: updatedInfo }));
+
+                    const tableUP = tables.get(jsonData.tableCode);
+                    if (!tableUP) {
+                        throw new Error(/* ERROR.INVALID_TABLE */ 'Table is not found');
+                    }
+                    const player = tableUP?.getPlayer(jsonData.seat - 1);
+                    if (!player) {
+                        throw new Error(/* ERROR.INVALID_PLAYER */ 'Player is not found');
+                    }
+
+                    player.name = jsonData.name;
+                    player.setChips(jsonData.chips);
+                    player.readyStatus = jsonData.readyStatus;
+
+                    broadcast2Table(jsonData.tableCode, tableUP.getTableData() as any);
+
                     break;
 
                 case 'next_turn':
