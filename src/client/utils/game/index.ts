@@ -3,15 +3,24 @@ import { OrderedEmiiter } from "../emitter";
 type GameEventMap = {
     "connect": [connection: WebSocket],
     "disconnect": [],
-    "table_created": [message: { tableCode: string }],
-    "table_joined": [message: { tableCode: string }],
+    "table_created": [message: { tableCode: string, seat: number }],
+    "table_joined": [message: { tableCode: string, seat: number }],
     "error": [message: any],
+    "opponents": [opponents: string[]],
+    "next_turn": [tableData: any],
+    "table_ended": [tableCode: string],
 };
 
 export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap> {
 
     private connection: WebSocket;
-    private roomCode: string | null = null;
+    public roomCode: string | null = null;
+    public seat: number | null = null;
+
+    public opponents: string[];
+    public playerName: string;
+
+    public readyStatus: boolean = false;
 
     public get isConnecting(): boolean {
         return Boolean(this.connection);
@@ -26,6 +35,9 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             console.log('Message from server:', message);
             this.emit(type, message);
         });
+
+        this.opponents = [];
+        this.playerName = "Player";
     }
 
     private send(message: any): void {
@@ -35,10 +47,11 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
     public async joinRoom(tableCode: string): Promise<void> {
         const { promise, resolve, reject } = Promise.withResolvers<void>();
 
-        function handle(this: GameAgent, message: { tableCode: string }) {
+        function handle(this: GameAgent, message: { tableCode: string, seat: number }) {
             console.log('Table joined:', message.tableCode);
 
             this.roomCode = message.tableCode;
+            this.seat = message.seat;
             resolve();
 
             this.unlisten('error', errorHandle);
@@ -60,7 +73,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         this.listen("disconnect", errorHandle);
         this.listen("error", errorHandle);
 
-        this.send({ type: "join_table", tableCode, chips: 1000, name: "Player1" });
+        this.send({ type: "join_table", tableCode, chips: 1000, name: "Player" });
         return promise;
     }
 
@@ -71,6 +84,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             console.log('Table created:', message.tableCode);
 
             this.roomCode = message.tableCode;
+            this.seat = 1;
             resolve();
 
             this.unlisten('error', errorHandle);
@@ -92,7 +106,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         this.listen("disconnect", errorHandle);
         this.listen("error", errorHandle);
 
-        this.send({ type: "create_table", chips: 1000, name: "Player1" });
+        this.send({ type: "create_table", chips: 1000, name: "Player" });
 
         return promise;
     }
@@ -102,5 +116,52 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             throw new Error('There is no connection to any room.');
 
         // TODO: send leave room message to server and disconnect socket
+    }
+
+    public changeName(name: string): void {
+        this.playerName = name;
+        // Why chips is passing as seat number?
+        this.send({ type: "update_player", tableCode: this.roomCode, chips: this.seat, name, readyStatus: this.readyStatus });
+    }
+
+    public changeReadyState(ready: boolean): void {
+        this.send({ type: "update_player", tableCode: this.roomCode, chips: this.seat, name: this.playerName, readyStatus: ready });
+    }
+
+    public startGame(): void {
+        // this.send({ type: "start_table", tableCode: this.roomCode });
+    }
+
+    public startMatch(): Promise<void> {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+
+        function handle(this: GameAgent, message: { tableCode: string, seat: number }) {
+            console.log('Table joined:', message.tableCode);
+
+            this.roomCode = message.tableCode;
+            this.seat = message.seat;
+            resolve();
+
+            this.unlisten('error', errorHandle);
+            this.unlisten('disconnect', errorHandle);
+            this.unlisten('table_joined', handle);
+        };
+
+        function errorHandle(this: GameAgent, error?: any) {
+            if (error)
+                console.error("Error creating table:", error);
+            reject(error);
+
+            this.unlisten("error", errorHandle);
+            this.unlisten("disconnect", errorHandle);
+            this.unlisten("table_joined", handle);
+        }
+
+        this.listen("table_joined", handle);
+        this.listen("disconnect", errorHandle);
+        this.listen("error", errorHandle);
+
+        this.send({ type: "random_table", chips: 1000, name: "Player" });
+        return promise;
     }
 };

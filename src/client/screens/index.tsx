@@ -4,7 +4,7 @@ import MainScreen from './main-screen';
 import MainMenu from './main-menu';
 import RandomMatch from './random-match';
 import RoomJoin from './room-join';
-import RoomWaiting from './room-waiting';
+import { RoomWaiting, RoomHosting } from './room-waiting';
 
 const routes: RouteObject[] = [
     {
@@ -17,7 +17,7 @@ const routes: RouteObject[] = [
     },
     {
         path: '/match',
-        element: <RandomMatch  />
+        element: <RandomMatch />
     },
     {
         path: '/join',
@@ -26,6 +26,10 @@ const routes: RouteObject[] = [
     {
         path: '/waiting',
         element: <RoomWaiting />
+    },
+    {
+        path: '/hosting',
+        element: <RoomHosting />
     },
     // {
     //     path: '/lobby',

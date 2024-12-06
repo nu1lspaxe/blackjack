@@ -46,7 +46,7 @@
     padding: 1rem;
     font-size: 1rem;
     font-weight: 300;
-    border: 1px solid var(--text-primary);
+    border: 1px solid currentColor;
     border-radius: 8px;
     background-color: #ffffff;
     outline: 0;
@@ -167,6 +167,63 @@
     &::placeholder {
         font-size: 1.25rem;
     }
+}
+/*!********************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/screens/room-waiting/index.module.css ***!
+  \********************************************************************************************************************************/
+.src-client-screens-room-waiting-index-module-css_code {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-align: center;
+    margin: 0;
+}
+
+.src-client-screens-room-waiting-index-module-css_players {
+    display: grid;
+    grid: 1fr 1fr / 1fr minmax(150px, 1fr) 1fr;
+    flex-grow: 1;
+    gap: .5rem;
+}
+
+.src-client-screens-room-waiting-index-module-css_oppenent {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+}
+
+.src-client-screens-room-waiting-index-module-css_player {
+    grid-area: 1 / 2 / 3 / 2;
+}
+
+.src-client-screens-room-waiting-index-module-css_view {
+    height: 100%;
+    width: 100%;
+    border: 1px solid var(--text-primary);
+    border-radius: .5rem;
+    background-color: #c0c0c0;
+}
+
+.src-client-screens-room-waiting-index-module-css_input {
+    padding: .5rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-align: center;
+    border: 1px solid var(--text-primary);
+    border-radius: 1.25rem;
+}
+
+.src-client-screens-room-waiting-index-module-css_ready {
+    color: #08f;
+}
+
+.src-client-screens-room-waiting-index-module-css_buttons {
+    display: grid;
+    grid: auto / 1fr 1fr;
+    gap: .5rem;
+    justify-content: center;
 }
 /*!****************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/client/index.css ***!

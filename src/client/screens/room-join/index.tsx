@@ -25,7 +25,7 @@ export const RoomJoin: FunctionComponent = function () {
 
     function handleCreateRoom() {
         gameAgent.newRoom()
-            .then(() => navigate('/waiting'))
+            .then(() => navigate('/hosting'))
             .catch((err) => console.error(err));
     }
 
