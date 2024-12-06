@@ -10,7 +10,7 @@ import { broadcast2Table } from "./core/Notifier";
 const server = createServer();
 
 // Handle static resources
-const staticResourceHandler = serveStatic("./public", { index: ["index.html"] });
+const staticResourceHandler = serveStatic("./assets", { index: ["index.html"] });
 server.addListener("request", function (req, res) {
     staticResourceHandler(req, res, function (err) {
         if (err)

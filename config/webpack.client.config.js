@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const mode = process.env.MODE ?? 'development';
 
@@ -11,7 +12,7 @@ const config = {
 
     output: {
         filename: 'index.js',
-        path: path.resolve('public')
+        path: path.resolve('assets')
     },
 
     module: {
@@ -71,6 +72,11 @@ const config = {
         }),
         new MiniCSSExtractPlugin({
             filename: 'styles.css',
+        }),
+        new CopyPlugin({
+            patterns: [
+                { from: path.resolve("public"), to: path.resolve("assets") }
+            ]
         })
     ]
 }
