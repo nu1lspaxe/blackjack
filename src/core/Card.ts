@@ -1,24 +1,24 @@
 enum Suit {
-    Hearts = 'Hearts',
-    Diamonds = 'Diamonds',
-    Clubs = 'Clubs',
-    Spades = 'Spades'
+    Hearts = 'heart',
+    Diamonds = 'diamond',
+    Clubs = 'club',
+    Spades = 'spade'
 }
 
 enum Value {
-    Two = '2',
-    Three = '3',
-    Four = '4',
-    Five = '5',
-    Six = '6',
-    Seven = '7',
-    Eight = '8',
-    Nine = '9',
-    Ten = '10',
-    Jack = 'J',
-    Queen = 'Q',
-    King = 'K',
-    Ace = 'A'
+    Two = 'two',
+    Three = 'three',
+    Four = 'four',
+    Five = 'five',
+    Six = 'six',
+    Seven = 'seven',
+    Eight = 'eight',
+    Nine = 'nine',
+    Ten = 'ten',
+    Jack = 'jack',
+    Queen = 'queen',
+    King = 'king',
+    Ace = 'ace'
 }
 
 class Card {

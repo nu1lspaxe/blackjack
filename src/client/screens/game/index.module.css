@@ -4,6 +4,7 @@
     height: 100%;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
 .round {
@@ -13,27 +14,73 @@
 .opponents {
     flex-grow: 1;
     position: relative;
+    width: 100%;
+}
+
+.cards {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    height: calc(var(--card-width) * 1.375);
+    
+    --card-width: 120px;
+    
+    .card {
+        width: var(--card-width);
+        height: calc(var(--card-width) * 1.375);
+        position: relative;
+
+        img {
+            height: 100%;
+            aspect-ratio: 8 / 11;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        &:last-child {
+            flex-shrink: 0;
+        }
+    }
+}
+
+.dealer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+
+    .cards {
+        width: fit-content;
+        --card-width: 80px;
+    }
 }
 
 .oppponent {
     display: flex;
-    flex-direction: column;
     position: absolute;
-
+    gap: 0.5rem;
+    
     &.up {
         top: 0;
+        flex-direction: column;
     }
 
     &.down {
         bottom: 0;
+        flex-direction: column-reverse;
     }
 
     &.left {
         left: 0;
+        align-items: flex-start;
     }
 
     &.right {
         right: 0;
+        align-items: flex-end;
     }
     
     .avatar {
@@ -43,25 +90,26 @@
         border-radius: .5rem;
     }
 
-    .hands {
-        width: 32px;
-        padding: 0 32px;
-
-        .card {
-            width: 64px;
-            margin: 0 32px;
-        }
+    .cards {
+        width: 96px;
+        --card-width: 64px;
     }
 }
 
-.hands {
+.player {
     display: flex;
-    width: 300px;
-    padding: 0 60px;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
 
-    .card {
-        width: 60px;
-        margin: 0 60px;
+    .cards {
+        width: 400px;
+        --card-width: 120px;
     }
+}
+
+.name {
+    text-align: center;
 }

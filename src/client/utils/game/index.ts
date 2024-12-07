@@ -3,6 +3,7 @@ import { OrderedEmiiter } from "../emitter";
 interface TableInfo {
     playersName: string[];
     playersSeat: number[];
+    hands: Card[][];
     status: "going" | "end" | "open";
 }
 
@@ -22,6 +23,18 @@ interface TableJoinedMessage {
     table: { code: string, players: Player[] };
 }
 
+export interface Opponent {
+    name: string;
+    seat: number;
+    hands: Card[];
+}
+
+export interface Card {
+    suit: string;
+    value: string;
+    point: number;
+}
+
 type GameEventMap = {
     "connect": [connection: WebSocket],
     "disconnect": [],
@@ -33,7 +46,7 @@ type GameEventMap = {
     "table_ended": [message: { tableCode: string }],
 
     "error": [message: any],
-    "opponents": [opponents: string[]],
+    "opponents": [opponents: Opponent[]],
     "next_turn": [tableData: any],
 
     "game_started": [status: boolean],
@@ -44,10 +57,13 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
     private connection: WebSocket;
     public hosting: boolean = false;
     public roomCode: string | null = null;
-    public seat: number | null = null;
-
-    public opponents: string[];
     public playerName: string;
+    public seat: number = -1;
+    public hands: Card[] = [];
+
+    public opponents: Opponent[];
+    public dealer: Opponent;
+    
 
     public readyStatus: boolean = false;
 
@@ -70,16 +86,14 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         });
 
         this.opponents = [];
+        this.dealer = { name: "Dealer", seat: 0, hands: [] };
         this.playerName = "Player";
 
         this.listen("broadcast_table", message => {
             this.opponents = this.getOpponentsFromTable(message.message);
-            console.log(this.opponents);
             this.emit("opponents", this.opponents);
-
-            if (this.gameStarted != (message.message.status == "going")) {
+            if (this.gameStarted != (message.message.status == "going"))
                 this.emit("game_started", message.message.status == "going");
-            }
         });
     }
 
@@ -94,9 +108,13 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         for (let i = 0; i < playersName.length; i++) {
             const name = playersName[i];
             const seat = playersSeat[i];
+            const hands = table.hands[seat] ?? [];
             if (seat !== this.seat)
-                opponents[seat - Number(seat > this.seat!) - 1] = name;
+                opponents[seat - Number(seat > this.seat) - 1] = { name, seat, hands };
         }
+
+        this.dealer.hands = table.hands[0] ?? [];
+        this.hands = table.hands[this.seat] ?? [];
 
         return opponents;
     }
@@ -114,10 +132,8 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             this.hosting = false;
             for (const player of message.table.players) {
                 if (player.seat != this.seat)
-                    this.opponents[player.seat - Number(player.seat > this.seat!) - 1] = player.name;
+                    this.opponents[player.seat - Number(player.seat > this.seat) - 1] = { name: player.name, seat: player.seat, hands: [] };
             }
-
-            console.log(this.opponents);
 
             resolve();
 
@@ -199,7 +215,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
     public startGame(): Promise<void> {
         if (this.gameStarted)
             return Promise.reject();
-        
+
         const { promise, resolve, reject } = Promise.withResolvers<void>();
 
         function handle(this: GameAgent) {
@@ -208,6 +224,9 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             this.unlisten('error', errorHandle);
             this.unlisten('disconnect', errorHandle);
             this.unlisten('game_started', handle);
+
+            if (this.hosting)
+                this.runGame();
         };
 
         function errorHandle(this: GameAgent, error?: any) {
@@ -276,12 +295,29 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
     public split(): void {
         this.send({ type: "player_action", action: "split", tableCode: this.roomCode, seat: this.seat });
     }
-    
+
     public surrender(): void {
         this.send({ type: "player_action", action: "surrender", tableCode: this.roomCode, seat: this.seat });
     }
 
     public nextTurn(): void {
         this.send({ type: "next_turn", tableCode: this.roomCode });
+    }
+
+    public runGame(): void {
+
+        // Start the game
+
+        let turn = 0;
+        // 1. Dealer's turn
+        // 2. Every Players' turn
+        // 3. Dealer's turn
+        // 4. Check for winners
+        const total = 1 + this.opponents.length + 1 + 1;
+        const interval = setInterval(() => {
+            this.nextTurn();
+            if (++turn >= total)
+                clearInterval(interval);
+        }, 500);
     }
 };

@@ -120,25 +120,35 @@ class Table {
                 }
             }
 
-            this.currSeat = (this.currSeat + 1) % 6;
+            // this.currSeat = (this.currSeat + 1) % 6;
+            this.currSeat = (this.currSeat + 1) % (this.players.length + 1);
 
         } else if (this.round === 2) {
 
             // Dealer receives the second card in second round, and
             // receives cards until the value is at least 17s
-            if (this.dealer.getHand().length === 1 || this.dealer.shouldHit()) {
+            // if (this.dealer.getHand().length === 1 || this.dealer.shouldHit()) {
+            //     card = this.deck.drawCard();
+            //     this.dealer.receiveCard(card);
+            //     this.hands[0] = [...this.hands[0], card];
+
+            //     this.isBusted[0] = this.dealer.isBust();
+            //     if (!this.dealer.shouldHit()) {
+            //         this.status = TableStatus.END;
+            //         this.round++;
+            //     }
+            // // } else {
+            // //     this.status = TableStatus.END;
+            // }
+
+            while (this.dealer.shouldHit()) {
                 card = this.deck.drawCard();
                 this.dealer.receiveCard(card);
                 this.hands[0] = [...this.hands[0], card];
-
-                this.isBusted[0] = this.dealer.isBust();
-                if (!this.dealer.shouldHit()) {
-                    this.status = TableStatus.END;
-                    this.round++;
-                }
-            // } else {
-            //     this.status = TableStatus.END;
             }
+
+            this.isBusted[0] = this.dealer.isBust();
+            this.status = TableStatus.END;
 
         } else {
             throw new Error(ERROR.INVALID_VALUE);
