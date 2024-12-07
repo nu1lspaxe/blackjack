@@ -6,11 +6,11 @@
   "license": "MIT",
   "scripts": {
     "test": "jest --config jest.config.js --color=16m",
-    "dev:build:client": "node .\\scripts\\client.build.js -w",
-    "dev:build:server": "node .\\scripts\\server.build.js -w",
-    "build:client": "node .\\scripts\\client.build.js -prod",
-    "build:server": "node .\\scripts\\server.build.js -prod",
-    "start": "node --require .\\dist\\instrumentation.js .\\dist\\index.js"
+    "dev:build:client": "node ./scripts/client.build.js -w",
+    "dev:build:server": "node ./scripts/server.build.js -w",
+    "build:client": "node ./scripts/client.build.js -prod",
+    "build:server": "node ./scripts/server.build.js -prod",
+    "start": "node --require ./dist/instrumentation.js ./dist/index.js"
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
