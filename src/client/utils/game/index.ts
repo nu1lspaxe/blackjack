@@ -75,7 +75,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
 
     constructor() {
         super();
-        this.connection = new WebSocket('ws://localhost:5000');
+        this.connection = new WebSocket(`ws://${location.host}`);
 
         this.connection.addEventListener('message', event => {
             const message = JSON.parse(event.data);

@@ -12,7 +12,7 @@ const config = {
 
     output: {
         filename: 'index.js',
-        path: path.resolve('assets')
+        path: path.resolve('public')
     },
 
     module: {
@@ -75,7 +75,7 @@ const config = {
         }),
         new CopyPlugin({
             patterns: [
-                { from: path.resolve("public"), to: path.resolve("assets") }
+                { from: path.resolve("assets"), to: path.resolve("public") }
             ]
         })
     ]
