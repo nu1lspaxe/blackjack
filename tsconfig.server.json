@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        // Type Checking
+        "strict": true,
+        "noImplicitOverride": true,
+
+        // Module
+        "target": "es5",
+        "module": "nodenext",
+        "moduleResolution": "node16",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "paths": {
+            "@/*": ["./src/*"],
+            "@utils": ["./src/core/*"],
+        },
+
+        // Completeness
+        "skipLibCheck": true,
+        
+    },
+
+    "src": ["./src/**/*"],
+    "exclude": ["./src/client/**/*"]
+}
