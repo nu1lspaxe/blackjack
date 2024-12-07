@@ -42,6 +42,7 @@ type GameEventMap = {
 export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap> {
 
     private connection: WebSocket;
+    public hosting: boolean = false;
     public roomCode: string | null = null;
     public seat: number | null = null;
 
@@ -110,6 +111,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             this.seat = message.seat;
             this.gameStarted = false;
             this.opponents = [];
+            this.hosting = false;
             for (const player of message.table.players) {
                 if (player.seat != this.seat)
                     this.opponents[player.seat - Number(player.seat > this.seat!) - 1] = player.name;
@@ -151,6 +153,7 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
             this.roomCode = message.tableCode;
             this.seat = 1;
             this.gameStarted = false;
+            this.hosting = true;
             resolve();
 
             this.unlisten('error', errorHandle);
@@ -256,5 +259,29 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
 
         this.send({ type: "random_table", chips: 1000, name: "Player" });
         return promise;
+    }
+
+    public hit(): void {
+        this.send({ type: "player_action", action: "hit", tableCode: this.roomCode, seat: this.seat });
+    }
+
+    public stand(): void {
+        this.send({ type: "player_action", action: "stand", tableCode: this.roomCode, seat: this.seat });
+    }
+
+    public double(): void {
+        this.send({ type: "player_action", action: "double", tableCode: this.roomCode, seat: this.seat });
+    }
+
+    public split(): void {
+        this.send({ type: "player_action", action: "split", tableCode: this.roomCode, seat: this.seat });
+    }
+    
+    public surrender(): void {
+        this.send({ type: "player_action", action: "surrender", tableCode: this.roomCode, seat: this.seat });
+    }
+
+    public nextTurn(): void {
+        this.send({ type: "next_turn", tableCode: this.roomCode });
     }
 };

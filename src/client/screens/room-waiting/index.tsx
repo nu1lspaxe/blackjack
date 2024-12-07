@@ -47,11 +47,11 @@ const RoomDisplay: FunctionComponent<PropsWithChildren> = function (props) {
             <h1 className={styles.code}>Room Code: {gameAgent.roomCode}</h1>
             <div className={styles.players}>
                 <div className={styles.opponent}>
-                    <div className={styles.name}>{gameAgent.opponents[0] ?? "--"}</div>
+                    <div /* className={styles.name} */>{gameAgent.opponents[0] ?? "--"}</div>
                     <div className={styles.view}></div>
                 </div>
                 <div className={styles.opponent}>
-                    <div className={styles.name}>{gameAgent.opponents[1] ?? "--"}</div>
+                    <div /* className={styles.name} */>{gameAgent.opponents[1] ?? "--"}</div>
                     <div className={styles.view}></div>
                 </div>
                 <div className={styles.player}>
@@ -59,11 +59,11 @@ const RoomDisplay: FunctionComponent<PropsWithChildren> = function (props) {
                 </div>
                 <div className={styles.opponent}>
                     <div className={styles.view}></div>
-                    <div className={styles.name}>{gameAgent.opponents[2] ?? "--"}</div>
+                    <div /* className={styles.name} */>{gameAgent.opponents[2] ?? "--"}</div>
                 </div>
                 <div className={styles.opponent}>
                     <div className={styles.view}></div>
-                    <div className={styles.name}>{gameAgent.opponents[3] ?? "--"}</div>
+                    <div /* className={styles.name} */>{gameAgent.opponents[3] ?? "--"}</div>
                 </div>
             </div>
             <input className={styles.input} type="text" onInput={handleNameChange} value={playerName} />

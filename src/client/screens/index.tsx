@@ -5,6 +5,7 @@ import MainMenu from './main-menu';
 import RandomMatch from './random-match';
 import RoomJoin from './room-join';
 import { RoomWaiting, RoomHosting } from './room-waiting';
+import Game from './game';
 
 const routes: RouteObject[] = [
     {
@@ -33,7 +34,7 @@ const routes: RouteObject[] = [
     },
     {
         path: '/game',
-        element: <div>Game</div>
+        element: <Game />
     }
 ];
 

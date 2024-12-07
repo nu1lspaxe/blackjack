@@ -17,7 +17,7 @@ export const RandomMatch: FunctionComponent = function () {
                 <button className={styles["change-button"]}></button>
             </div>
             <div className={styles.name}>
-                <span className={styles.label}>Display Name</span>
+                <span /* className={styles.label} */>Display Name</span>
                 <input className={styles.input}></input>
             </div>
             <Button>Start Matching</Button>

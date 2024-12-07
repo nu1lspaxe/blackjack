@@ -1,0 +1,67 @@
+.view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.round {
+    font-size: 1.5rem;
+}
+
+.opponents {
+    flex-grow: 1;
+    position: relative;
+}
+
+.oppponent {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+
+    &.up {
+        top: 0;
+    }
+
+    &.down {
+        bottom: 0;
+    }
+
+    &.left {
+        left: 0;
+    }
+
+    &.right {
+        right: 0;
+    }
+    
+    .avatar {
+        width: 64px;
+        height: 64px;
+        border: 1px solid var(--text-primary);
+        border-radius: .5rem;
+    }
+
+    .hands {
+        width: 32px;
+        padding: 0 32px;
+
+        .card {
+            width: 64px;
+            margin: 0 32px;
+        }
+    }
+}
+
+.hands {
+    display: flex;
+    width: 300px;
+    padding: 0 60px;
+    justify-content: space-between;
+
+    .card {
+        width: 60px;
+        margin: 0 60px;
+    }
+}

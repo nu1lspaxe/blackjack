@@ -86,11 +86,11 @@ export function startTable(tableCode: string) {
         throw new Error(ERROR.INVALID_TABLE);
     }
 
-    table.players.forEach(player => {
-        if (!player.readyStatus) {
-            throw new Error(ERROR.NOT_READY);
-        }
-    });
+    // table.players.forEach(player => {
+    //     if (!player.readyStatus) {
+    //         throw new Error(ERROR.NOT_READY);
+    //     }
+    // });
 
     if (table) {
         let tableData = table.startGame();
