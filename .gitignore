@@ -134,4 +134,4 @@ dist
 *.pem
 
 # client build
-assets/
+public/
