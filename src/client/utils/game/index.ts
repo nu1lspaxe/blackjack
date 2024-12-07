@@ -247,15 +247,22 @@ export const gameAgent = new class GameAgent extends OrderedEmiiter<GameEventMap
         return promise;
     }
 
-    public startMatch(): Promise<void> {
-        const { promise, resolve, reject } = Promise.withResolvers<void>();
+    public startMatch(): Promise<number> {
+        const { promise, resolve, reject } = Promise.withResolvers<number>();
 
         function handle(this: GameAgent, message: TableJoinedMessage) {
             console.log('Table joined:', message.table.code);
 
             this.roomCode = message.table.code;
             this.seat = message.seat;
-            resolve();
+            this.gameStarted = false;
+            this.opponents = [];
+            this.hosting = false;
+            for (const player of message.table.players) {
+                if (player.seat != this.seat)
+                    this.opponents[player.seat - Number(player.seat > this.seat) - 1] = { name: player.name, seat: player.seat, hands: [] };
+            }
+            resolve(this.seat);
 
             this.unlisten('error', errorHandle);
             this.unlisten('disconnect', errorHandle);
