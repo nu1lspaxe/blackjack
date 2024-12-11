@@ -1,0 +1,54 @@
+.code {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-align: center;
+    margin: 0;
+}
+
+.players {
+    display: grid;
+    grid: 1fr 1fr / 1fr minmax(150px, 1fr) 1fr;
+    flex-grow: 1;
+    gap: .5rem;
+}
+
+.opponent {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+}
+
+.player {
+    grid-area: 1 / 2 / 3 / 2;
+}
+
+.view {
+    height: 100%;
+    width: 100%;
+    border: 1px solid var(--text-primary);
+    border-radius: .5rem;
+    background-color: #c0c0c0;
+}
+
+.input {
+    padding: .5rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    text-align: center;
+    border: 1px solid var(--text-primary);
+    border-radius: 1.25rem;
+}
+
+.ready {
+    color: #08f;
+}
+
+.buttons {
+    display: grid;
+    grid: auto / 1fr 1fr;
+    gap: .5rem;
+    justify-content: center;
+}

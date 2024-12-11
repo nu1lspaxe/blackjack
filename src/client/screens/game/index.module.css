@@ -1,0 +1,115 @@
+.view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.round {
+    font-size: 1.5rem;
+}
+
+.opponents {
+    flex-grow: 1;
+    position: relative;
+    width: 100%;
+}
+
+.cards {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    height: calc(var(--card-width) * 1.375);
+    
+    --card-width: 120px;
+    
+    .card {
+        width: var(--card-width);
+        height: calc(var(--card-width) * 1.375);
+        position: relative;
+
+        img {
+            height: 100%;
+            aspect-ratio: 8 / 11;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        &:last-child {
+            flex-shrink: 0;
+        }
+    }
+}
+
+.dealer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+
+    .cards {
+        width: fit-content;
+        --card-width: 80px;
+    }
+}
+
+.oppponent {
+    display: flex;
+    position: absolute;
+    gap: 0.5rem;
+    
+    &.up {
+        top: 0;
+        flex-direction: column;
+    }
+
+    &.down {
+        bottom: 0;
+        flex-direction: column-reverse;
+    }
+
+    &.left {
+        left: 0;
+        align-items: flex-start;
+    }
+
+    &.right {
+        right: 0;
+        align-items: flex-end;
+    }
+    
+    .avatar {
+        width: 64px;
+        height: 64px;
+        border: 1px solid var(--text-primary);
+        border-radius: .5rem;
+    }
+
+    .cards {
+        width: 96px;
+        --card-width: 64px;
+    }
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+
+    .cards {
+        width: 400px;
+        --card-width: 120px;
+    }
+}
+
+.name {
+    text-align: center;
+}
