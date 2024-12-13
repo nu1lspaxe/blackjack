@@ -1,0 +1,74 @@
+name: Build Test Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name'     
+        required: true
+      note:
+        description: 'Release note'
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build client
+        run: npm run build:client
+
+      - name: Build server
+        run: npm run build:server
+
+      - name: run server
+        run: |
+          nohup node --require ./dist/instrumentation.js ./dist/index.js &
+          sleep 10  # 等待 10 秒後結束伺服器
+          pkill node  # 停止伺服器
+
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag it
+        run: |
+          git config --global user.name 'liehcheng'
+          git config --global user.email '131954742+liehcheng@users.noreply.github.com'
+          git tag -a ${{ inputs.tag }} -m "${{ inputs.note }}" main
+          git push --tags
+          # git push origin ${{ inputs.tag }}
+      - name: Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ inputs.tag }}
+          release_name: Release ${{ inputs.tag }}
+          body: ${{ inputs.note }}
+          draft: false
+          prerelease: false
